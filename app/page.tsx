@@ -1,5 +1,10 @@
 import { ListVideos } from "@/components/videos/ListVideos";
-import { Video } from "@/components/videos/Video";
+import { VideoSkeleton } from "@/components/videos/VideoSkeleton";
+import dynamic from "next/dynamic";
+
+const Video = dynamic(() => import("@/components/videos/Video"), {
+    loading: () => <VideoSkeleton />,
+});
 
 export default function Home() {
     return (

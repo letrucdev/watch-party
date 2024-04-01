@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export const Video = () => {
+export default function Video() {
     return (
         <div className={"flex xl:basis-1/4 md:basis-1/3 sm:basis-1/2 p-2"}>
             <div className="flex flex-col cursor-pointer group">
@@ -36,4 +36,4 @@ export const Video = () => {
             </div>
         </div>
     );
-};
+}
