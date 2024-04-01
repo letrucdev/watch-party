@@ -1,9 +1,6 @@
-import { ScrollArea } from "../ui/scroll-area";
-import { IParticipant, Participant } from "./Participant";
-
-interface IParticipantList {
-  participants: IParticipant[];
-}
+import { IParticipantList } from "@/types/participants.type";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Participant } from "./Participant";
 
 export const ParticipantList = ({ participants }: IParticipantList) => {
   return (

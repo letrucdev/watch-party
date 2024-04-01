@@ -1,10 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-
-export interface IParticipant {
-  id: number;
-  avatarSrc: string;
-  username: string;
-}
+import { IParticipant } from "@/types/participants.type";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Participant = ({ id, avatarSrc, username }: IParticipant) => {
   return (
@@ -14,8 +9,8 @@ export const Participant = ({ id, avatarSrc, username }: IParticipant) => {
         <AvatarFallback>{username.charAt(0).toUpperCase()}</AvatarFallback>
       </Avatar>
       <span className="flex flex-col">
-        <p className="text-sm line-clamp-1 text-ellipsis">{username}</p>
-        <small className="text-xs text-muted-foreground">Chủ phòng</small>
+        <p className="text-sm line-clamp-1 text-ellipsis font-semibold">{username}</p>
+        <small className="text-muted-foreground line-clamp-1">Chủ phòng</small>
       </span>
     </div>
   );

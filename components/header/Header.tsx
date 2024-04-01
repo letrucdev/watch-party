@@ -1,7 +1,7 @@
+import Link from "next/link";
 import { InputSearch } from "@/components/ui/input-search";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "./ThemeToggle";
-import Link from "next/link";
 
 export const Header = () => {
     return (
