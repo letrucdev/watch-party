@@ -4,11 +4,11 @@ import dynamic from "next/dynamic";
 import React, { useMemo, useState } from "react";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import MenuLoading from "@/components/menu/MenuLoading";
 import { ListVideo, MessageSquare, Users, X } from "lucide-react";
-import MenuLoading from "./MenuLoading";
 
 const ParticipantList = dynamic(
-    () => import("@/components/room/ParticipantList"),
+    () => import("@/components/participant/ParticipantList"),
     {
         loading: () => <MenuLoading />,
     }
@@ -123,12 +123,10 @@ export default function Menu() {
         };
     }, [participants]);
 
-    const handleChangeTab = (tab: string) => {
-        setTabMenu(tab);
-    };
+    const handleChangeTab = (tab: string) => setTabMenu(tab);
 
     return (
-        <div className="rounded-xl border-border w-[32rem] max-w-[32rem] border flex flex-col ml-4 max-h-[580px] min-h-[580px]">
+        <div className="rounded-xl border-border border flex flex-col h-[580px] max-h-[580px] min-h-[580px]">
             <span className="border-b border-border p-4 flex justify-between items-center">
                 <p className="font-semibold">{tabs[tabMenu].title}</p>
                 <X

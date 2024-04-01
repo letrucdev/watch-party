@@ -1,7 +1,12 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Item } from "./Item";
-import { useMemo } from "react";
 import { IVideo } from "@/types/video.type";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
+import { ItemSkeleton } from "./ItemSkeleton";
+
+const PlayListItem = dynamic(() => import("./PlayListItem"), {
+    loading: () => <ItemSkeleton />,
+});
 
 export default function PlayList() {
     const playlist: IVideo[] = useMemo(() => {
@@ -132,12 +137,12 @@ export default function PlayList() {
         <ScrollArea className="flex flex-col flex-grow">
             {playlist.map((video) => {
                 return (
-                    <Item
+                    <PlayListItem
+                        key={video.id}
                         id={video.id}
                         thumbnail={video.thumbnail}
                         uploader={video.uploader}
                         videoTitle={video.videoTitle}
-                        key={video.id}
                     />
                 );
             })}

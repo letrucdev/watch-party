@@ -2,9 +2,13 @@ import Image from "next/image";
 
 export default function Video() {
     return (
-        <div className={"flex xl:basis-1/4 md:basis-1/3 sm:basis-1/2 p-2"}>
+        <div
+            className={
+                "flex xl:basis-1/4 md:basis-1/3 sm:basis-1/2 basis-full p-2"
+            }
+        >
             <div className="flex flex-col cursor-pointer group">
-                <div className={"w-full overflow-hidden rounded "}>
+                <div className={"overflow-hidden rounded-lg"}>
                     <Image
                         src="https://i.ytimg.com/vi/P2R0_J8-ls8/maxresdefault.jpg"
                         alt="thumbnail"

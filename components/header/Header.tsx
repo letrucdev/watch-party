@@ -11,8 +11,13 @@ export const Header = () => {
             }
         >
             <div className={"container flex items-center p-4"}>
-                <h1 className="text-xl font-extrabold dark:text-white flex-shrink-0">
-                    <Link href={"/"}> Watch Party</Link>
+                <h1 className="text-2xl font-extrabold dark:text-white flex-shrink-0">
+                    <Link
+                        href={"/"}
+                        className="dark:bg-gradient-to-r bg-gradient-to-l from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+                    >
+                        Watch Party
+                    </Link>
                 </h1>
                 <div className={"md:flex justify-center w-full hidden"}>
                     <InputSearch
