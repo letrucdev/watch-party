@@ -1,3 +1,4 @@
+import { ListPlus, Play } from "lucide-react";
 import Image from "next/image";
 
 export default function Video() {
@@ -8,7 +9,7 @@ export default function Video() {
             }
         >
             <div className="flex flex-col cursor-pointer group">
-                <div className={"overflow-hidden rounded-lg"}>
+                <div className={"overflow-hidden rounded-lg relative"}>
                     <Image
                         src="https://i.ytimg.com/vi/P2R0_J8-ls8/maxresdefault.jpg"
                         alt="thumbnail"
@@ -18,6 +19,12 @@ export default function Video() {
                             "group-hover:scale-110 transition-all duration-200"
                         }
                     />
+                    <div className="bg-primary-foreground/10 w-full h-full absolute z-10 top-0 rounded-lg backdrop-blur-sm flex flex-col xl:flex-row items-center justify-center space-x-2 space-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 select-none ">
+                        <Play size={36} />
+                        <p className="font-semibold">Xem ngay</p>
+                        {/* <ListPlus size={36} />
+                        <p className="font-semibold">Thêm vào danh sách phát</p> */}
+                    </div>
                 </div>
                 <p className={"line-clamp-2 text-sm font-semibold mt-2"}>
                     NHẠC NGHE TRÊN GIƯỜNG #6🎧NHẠC TRẺ REMIX 2024🎧MIXSET HOUSE

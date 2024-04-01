@@ -13,8 +13,8 @@ export default function RoomPage() {
     return (
         <div className="flex flex-col xl:flex-row xl:space-y-0 xl:space-x-4 space-y-4">
             <YoutubePlayer
-                videoTitle="NHẠC NGHE TRÊN GIƯỜNG #6🎧NHẠC TRẺ REMIX 2024🎧MIXSET HOUSE LAK & DEEP
-      HOUSE 2024🎧VIET DEEP 2024"
+                videoId="yrPIlWfM75o"
+                videoTitle="TOULIVER x BINZ x ANDREE RIGHT HAND - KRAZY ( Ft. EVY ) [ OFFICIAL MV ]"
             />
             <div className="flex flex-col xl:basis-1/3 basis-full space-y-3 space">
                 <Menu />

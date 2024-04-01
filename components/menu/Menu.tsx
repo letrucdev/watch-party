@@ -3,9 +3,9 @@
 import dynamic from "next/dynamic";
 import React, { useMemo, useState } from "react";
 
+import { ListVideo, MessageSquare, Users, X } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MenuLoading from "@/components/menu/MenuLoading";
-import { ListVideo, MessageSquare, Users, X } from "lucide-react";
 
 const ParticipantList = dynamic(
     () => import("@/components/participant/ParticipantList"),
@@ -129,10 +129,10 @@ export default function Menu() {
         <div className="rounded-xl border-border border flex flex-col h-[580px] max-h-[580px] min-h-[580px]">
             <span className="border-b border-border p-4 flex justify-between items-center">
                 <p className="font-semibold">{tabs[tabMenu].title}</p>
-                <X
+                {/*  <X
                     className="cursor-pointer hover:opacity-80"
                     size={16}
-                />
+                /> */}
             </span>
 
             {Object.keys(tabs).map((tab, index) => {
