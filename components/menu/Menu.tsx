@@ -126,7 +126,7 @@ export default function Menu() {
     const handleChangeTab = (tab: string) => setTabMenu(tab);
 
     return (
-        <div className="rounded-xl border-border border flex flex-col h-[580px] max-h-[580px] min-h-[580px]">
+        <div className="rounded-xl border-border border flex flex-col h-[600px] max-h-[600px] min-h-[600px]">
             <span className="border-b border-border p-4 flex justify-between items-center">
                 <p className="font-semibold">{tabs[tabMenu].title}</p>
                 {/*  <X

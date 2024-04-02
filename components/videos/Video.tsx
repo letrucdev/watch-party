@@ -1,16 +1,28 @@
+import { routePath } from "@/constants/path";
+import { cn } from "@/lib/utils";
 import { ListPlus, Play } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Video() {
+interface IVideo {
+    className?: string;
+}
+
+export default function Video({ className }: IVideo) {
     return (
         <div
-            className={
-                "flex xl:basis-1/4 md:basis-1/3 sm:basis-1/2 basis-full p-2"
-            }
+            className={cn(
+                "flex xl:basis-1/4 md:basis-1/3 sm:basis-1/2 basis-full p-2",
+                className
+            )}
         >
-            <div className="flex flex-col cursor-pointer group">
+            <Link
+                href={routePath.party + `/${crypto.randomUUID()}`}
+                className="flex flex-col cursor-pointer group"
+            >
                 <div className={"overflow-hidden rounded-lg relative"}>
                     <Image
+                        quality={80}
                         src="https://i.ytimg.com/vi/P2R0_J8-ls8/maxresdefault.jpg"
                         alt="thumbnail"
                         width={1280}
@@ -44,7 +56,7 @@ export default function Video() {
                     ></span>
                     <p>4 giờ trước</p>
                 </span>
-            </div>
+            </Link>
         </div>
     );
 }

@@ -1,6 +1,5 @@
 import { ListVideos } from "@/components/videos/ListVideos";
 import { VideoSkeleton } from "@/components/videos/VideoSkeleton";
-import { Flame } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const Video = dynamic(() => import("@/components/videos/Video"), {
@@ -10,12 +9,14 @@ const Video = dynamic(() => import("@/components/videos/Video"), {
 export default function Home() {
     return (
         <>
-            <span className="flex space-x-1">
-                <h2 className="text-xl font-semibold mb-2">Đề xuất</h2>
-                <Flame />
-            </span>
+            <div className="flex flex-col mb-3">
+                <h2 className="text-xl font-semibold">Đề xuất</h2>
+                <p className="text-muted-foreground">
+                    Những video nổi bật hôm nay
+                </p>
+            </div>
             <ListVideos>
-                {Array(50)
+                {Array(36)
                     .fill(0)
                     .map((_, index) => (
                         <Video key={index} />

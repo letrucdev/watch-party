@@ -1,5 +1,6 @@
 "use client";
 
+import { Clipboard } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -21,6 +22,10 @@ export default function InviteMenu() {
                     type="button"
                     variant={"secondary"}
                 >
+                    <Clipboard
+                        size={16}
+                        className="mr-2"
+                    />
                     Sao chép
                 </Button>
             </div>
