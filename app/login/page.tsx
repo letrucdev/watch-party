@@ -1,14 +1,50 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { routePath } from "@/constants/path";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { ILogin, LoginSchema } from "../api/schema/Auth";
+import { Input } from "@/components/ui/input";
+import { FormErrorResponse, ILoginRequest } from "@/types/api.type";
 import Link from "next/link";
 import Image from "next/image";
+import { useMutation } from "@tanstack/react-query";
+import { authApi } from "@/lib/apis";
+import { AxiosError } from "axios";
+import { IsAcceptErrorStatusCode } from "@/lib/utils";
 
 export default function LoginPage() {
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm<ILogin>({ resolver: zodResolver(LoginSchema) });
+
+    const loginMutation = useMutation({
+        mutationFn: authApi.Login,
+        onError: (error) => {
+            if (error instanceof AxiosError && IsAcceptErrorStatusCode(error)) {
+                const formError: FormErrorResponse = error.response?.data;
+                Object.keys(formError).forEach((key) => {
+                    setError(key as keyof ILogin, {
+                        message: formError[key as keyof ILogin][0],
+                    });
+                });
+            }
+        },
+    });
+
+    const onSubmit: SubmitHandler<ILoginRequest> = (data) =>
+        loginMutation.mutate(data);
+
     return (
         <div className="flex flex-grow justify-center items-center">
             <div className="flex border-border border rounded-[0.5rem] overflow-hidden mt-14">
                 <div className="hidden lg:flex flex-grow overflow-hidden w-[23rem] h-[40rem] border-r">
                     <Image
+                        priority
                         className="object-cover"
                         width={3072}
                         height={3072}
@@ -27,11 +63,17 @@ export default function LoginPage() {
                             </p>
                         </div>
                         <div className="grid gap-6">
-                            <form>
+                            <form
+                                onSubmit={handleSubmit(onSubmit)}
+                                noValidate
+                            >
                                 <div className="grid gap-2">
                                     <div className="grid gap-1">
-                                        <input
-                                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                        <Input
+                                            {...register("email", {
+                                                required: true,
+                                                min: 1,
+                                            })}
                                             id="email"
                                             placeholder="youremail@email.com"
                                             autoCapitalize="none"
@@ -39,16 +81,22 @@ export default function LoginPage() {
                                             autoCorrect="off"
                                             type="email"
                                         />
+                                        <p className="text-destructive text-sm font-medium pt-1">
+                                            {errors.email?.message}
+                                        </p>
                                     </div>
                                     <div className="grid gap-1">
-                                        <input
-                                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                        <Input
+                                            {...register("password")}
                                             id="password"
                                             placeholder="Nhập mật khẩu"
                                             autoCapitalize="none"
                                             autoCorrect="off"
                                             type="password"
                                         />
+                                        <p className="text-destructive text-sm font-medium pt-1">
+                                            {errors.password?.message}
+                                        </p>
                                     </div>
                                     <Button>Đăng nhập</Button>
                                 </div>
@@ -70,23 +118,6 @@ export default function LoginPage() {
                                 <Link href={routePath.register}>Đăng ký</Link>
                             </Button>
                         </div>
-                        {/*  <p className="px-8 text-center text-sm text-muted-foreground">
-                                By clicking continue, you agree to our{" "}
-                                <a
-                                    className="underline underline-offset-4 hover:text-primary"
-                                    href="/terms"
-                                >
-                                    Terms of Service
-                                </a>{" "}
-                                and{" "}
-                                <a
-                                    className="underline underline-offset-4 hover:text-primary"
-                                    href="/privacy"
-                                >
-                                    Privacy Policy
-                                </a>
-                                .
-                            </p> */}
                     </div>
                 </div>
             </div>

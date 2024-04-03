@@ -1,9 +1,12 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ProfileSetting() {
+    const { authUser } = useAuth();
     return (
         <div className="flex flex-col flex-grow">
             <div className="flex flex-col">
@@ -24,6 +27,7 @@ export default function ProfileSetting() {
                             Nhập tên hiển thị
                         </Label>
                         <Input
+                            defaultValue={authUser?.displayName}
                             id="displayName"
                             placeholder="Tên của bạn"
                         />
@@ -41,6 +45,7 @@ export default function ProfileSetting() {
                             Email
                         </Label>
                         <Input
+                            defaultValue={authUser?.email}
                             id="email"
                             placeholder="Nhập email của bạn"
                         />
