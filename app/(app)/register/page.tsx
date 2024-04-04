@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@components/ui/button";
 import { routePath } from "@/constants/path";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { IRegister, RegisterSchema } from "../api/schema/Auth";
+import { IRegister, RegisterSchema } from "@api/schema/Auth";
 import { authApi } from "@/lib/apis";
-import { Input } from "@/components/ui/input";
+import { Input } from "@components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +14,8 @@ import { AxiosError } from "axios";
 import { FormErrorResponse } from "@/types/api.type";
 import { IsAcceptErrorStatusCode } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -26,7 +28,12 @@ export default function RegisterPage() {
 
     const registerMutation = useMutation({
         mutationFn: authApi.Register,
-        onSuccess: () => router.push(routePath.login),
+        onSuccess: () => {
+            toast.success("Thông báo", {
+                description: "Đăng ký tài khoản thành công",
+            });
+            router.push(routePath.login);
+        },
         onError: (error) => {
             if (error instanceof AxiosError && IsAcceptErrorStatusCode(error)) {
                 const formError: FormErrorResponse = error.response?.data;
@@ -39,8 +46,9 @@ export default function RegisterPage() {
         },
     });
 
-    const onSubmit: SubmitHandler<IRegister> = (data) =>
+    const onSubmit: SubmitHandler<IRegister> = (data) => {
         registerMutation.mutate(data);
+    };
 
     return (
         <div className="flex flex-grow justify-center items-center">
@@ -121,7 +129,14 @@ export default function RegisterPage() {
                                             {errors.confirmPassword?.message}
                                         </p>
                                     </div>
-                                    <Button>Đăng ký</Button>
+                                    <Button
+                                        disabled={registerMutation.isPending}
+                                    >
+                                        {registerMutation.isPending && (
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        )}
+                                        Đăng ký
+                                    </Button>
                                 </div>
                             </form>
                             <div className="relative">

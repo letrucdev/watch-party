@@ -11,6 +11,14 @@ const routePath = {
     settingSystem: settingsPath + "/system",
 };
 
+const privatePath = [
+    routePath.home,
+    routePath.party,
+    routePath.settingProfile,
+    routePath.changePassword,
+    routePath.settingSystem,
+];
+
 const authPath = [routePath.login, routePath.register];
 
-export { routePath, authPath };
+export { routePath, authPath, privatePath };

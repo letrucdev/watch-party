@@ -5,6 +5,7 @@ import {
     SuccessResponse,
 } from "@/types/api.type";
 import http from "./http";
+import { IChangeUserPassword, IUpdateUserInfo } from "@api/schema/User";
 
 const authApi = {
     Login: async (data: ILoginRequest) => {
@@ -36,4 +37,34 @@ const authApi = {
     },
 };
 
-export { authApi };
+const userApi = {
+    Info: async () => {
+        try {
+            const user = await http.get<ILoginResponse>("/user");
+            return user.data;
+        } catch (err) {
+            throw err;
+        }
+    },
+    ChangePassword: async (data: IChangeUserPassword) => {
+        try {
+            const changePassword = await http.put<SuccessResponse>(
+                "/user/password",
+                data
+            );
+            return changePassword.data;
+        } catch (err) {
+            throw err;
+        }
+    },
+    UpdateInfo: async (data: IUpdateUserInfo) => {
+        try {
+            const updateUser = await http.put<ILoginResponse>("/user", data);
+            return updateUser.data;
+        } catch (err) {
+            throw err;
+        }
+    },
+};
+
+export { authApi, userApi };

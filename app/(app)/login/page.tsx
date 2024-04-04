@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@components/ui/button";
 import { routePath } from "@/constants/path";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ILogin, LoginSchema } from "../api/schema/Auth";
-import { Input } from "@/components/ui/input";
+import { ILogin, LoginSchema } from "@api/schema/Auth";
+import { Input } from "@components/ui/input";
 import { FormErrorResponse, ILoginRequest } from "@/types/api.type";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/lib/apis";
 import { AxiosError } from "axios";
 import { IsAcceptErrorStatusCode } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
     const {
@@ -98,7 +99,12 @@ export default function LoginPage() {
                                             {errors.password?.message}
                                         </p>
                                     </div>
-                                    <Button>Đăng nhập</Button>
+                                    <Button disabled={loginMutation.isPending}>
+                                        {loginMutation.isPending && (
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        )}
+                                        Đăng nhập
+                                    </Button>
                                 </div>
                             </form>
                             <div className="relative">

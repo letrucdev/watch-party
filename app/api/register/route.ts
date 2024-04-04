@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { NextRequest } from "next/server";
 import { IRegister, RegisterSchema } from "../schema/Auth";
 import bcrypt from "bcrypt";
+import { HttpStatusCode } from "axios";
 
 const prisma = new PrismaClient();
 
@@ -38,9 +39,23 @@ export async function POST(request: NextRequest) {
             {
                 message: "Tạo tài khoản thành công!",
             },
-            { status: 201 }
+            { status: HttpStatusCode.Created }
         );
     } catch (error) {
-        return Response.json({ error }, { status: 500 });
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            /* 
+            Email is exits,
+            P2025 code mean no matches were found 
+            */
+            if (error.code === "P2002") {
+                return Response.json(
+                    {
+                        email: ["Email đã được sử dụng"],
+                    },
+                    { status: HttpStatusCode.BadRequest }
+                );
+            }
+        }
+        throw error;
     }
 }

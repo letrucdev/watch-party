@@ -3,10 +3,47 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { useAuth } from "@/context/AuthContext";
+import { userApi } from "@/lib/apis";
+import {
+    IUpdateSystemSetting,
+    UpdateSystemSettingSchema,
+} from "@api/schema/User";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 export default function SystemSettingPage() {
-    const { authUser } = useAuth();
+    const { data, isPending } = useQuery({
+        queryKey: ["user"],
+        staleTime: 30 * 60 * 1000,
+        queryFn: userApi.Info,
+    });
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setError,
+        formState: { errors },
+    } = useForm<IUpdateSystemSetting>({
+        resolver: zodResolver(UpdateSystemSettingSchema),
+    });
+
+    const user = data?.user;
+
+    useEffect(() => {
+        if (user) {
+            reset({
+                animationEnable: Boolean(user.setting.animationEnable),
+                ecoMode: Boolean(user.setting.ecoMode),
+            });
+        }
+    }, [reset, user]);
+
+    const onSubmit: SubmitHandler<IUpdateSystemSetting> = (data) =>
+        console.log(data);
+
     return (
         <div className="flex flex-col flex-grow">
             <div className="flex flex-col">
@@ -16,7 +53,7 @@ export default function SystemSettingPage() {
                 </p>
                 <Separator className="my-4" />
 
-                <form action="#!">
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-col mt-3 space-y-8">
                         <div className="flex flex-col space-y-2 w-full">
                             <Label
@@ -36,9 +73,8 @@ export default function SystemSettingPage() {
                                     </p>
                                 </div>
                                 <Switch
-                                    defaultChecked={Boolean(
-                                        authUser?.setting.animationEnable
-                                    )}
+                                    disabled={isPending}
+                                    {...register("animationEnable")}
                                 />
                             </div>
 
@@ -53,9 +89,8 @@ export default function SystemSettingPage() {
                                     </p>
                                 </div>
                                 <Switch
-                                    defaultChecked={Boolean(
-                                        authUser?.setting.ecoMode
-                                    )}
+                                    disabled={isPending}
+                                    {...register("ecoMode")}
                                 />
                             </div>
                         </div>

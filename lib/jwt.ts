@@ -9,9 +9,6 @@ class JWT {
     }
 
     async SignToken(data: any) {
-        /*    const token = jose.SignJWT(data, this.privateKey, {
-            expiresIn: "7d",
-        }); */
         try {
             const token = await new SignJWT(data)
                 .setProtectedHeader({ alg: "HS256" })
@@ -20,19 +17,19 @@ class JWT {
                 .sign(new TextEncoder().encode(this.privateKey));
 
             return token;
-        } catch {}
-    }
-
-    VerifyToken(token: string) {
-        try {
-            const verified = jose.jwtVerify(
-                token,
-                new TextEncoder().encode(this.privateKey)
-            );
-            return verified;
         } catch (error) {
             throw error;
         }
+    }
+
+    async VerifyToken(token: string) {
+        try {
+            const verified = await jose.jwtVerify(
+                token,
+                new TextEncoder().encode(this.privateKey)
+            );
+            return verified.payload;
+        } catch (error) {}
     }
 }
 

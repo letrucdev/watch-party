@@ -1,28 +1,36 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-import { authPath, routePath } from "./constants/path";
+import { authPath, privatePath, routePath } from "./constants/path";
 import jwt from "./lib/jwt";
+import { CookiesKeys } from "./lib/constants";
 
-const isAuthenticated = async (accessToken: string) => {
+const isAuthenticated = (accessToken: string) => {
     try {
-        return (await jwt.VerifyToken(accessToken)).payload;
-    } catch (error) {}
+        return jwt.VerifyToken(accessToken);
+    } catch (error) {
+        throw error;
+    }
 };
 
 export async function middleware(request: NextRequest) {
+    const { pathname } = request.nextUrl;
+
     const accessTokenFromCookies = request.cookies.get(
-        "__watch_party_accessToken"
+        CookiesKeys.accessToken
     )?.value;
 
-    if (
-        !accessTokenFromCookies ||
-        !(await isAuthenticated(accessTokenFromCookies))
-    ) {
+    const isAuth = await isAuthenticated(accessTokenFromCookies!);
+
+    if (privatePath.some((path) => path.startsWith(pathname)) && !isAuth) {
         const response = NextResponse.redirect(
             new URL(routePath.login, request.url)
         );
-        response.cookies.delete("__watch_party_accessToken");
+        response.cookies.delete(CookiesKeys.accessToken);
         return response;
+    }
+
+    if (authPath.includes(pathname) && isAuth) {
+        return NextResponse.redirect(new URL(routePath.home, request.url));
     }
 
     return NextResponse.next();
@@ -30,6 +38,5 @@ export async function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-    matcher:
-        "/((?!login|register|api/login|api/register|_next/static|_next/image|favicon.ico|assets).*)",
+    matcher: "/((?!api|_next/static|_next/image|favicon.ico|assets).*)",
 };

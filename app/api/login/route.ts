@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import jwt from "@/lib/jwt";
 import bcrypt from "bcrypt";
 import _ from "lodash";
+import { HttpStatusCode } from "axios";
+import { CookiesKeys } from "@/lib/constants";
 
 const prisma = new PrismaClient();
 
@@ -17,7 +19,7 @@ export async function POST(request: NextRequest) {
     if (!validate.success) {
         const formattedError = validate.error.flatten().fieldErrors;
         return Response.json(formattedError, {
-            status: 400,
+            status: HttpStatusCode.BadRequest,
         });
     }
 
@@ -27,10 +29,10 @@ export async function POST(request: NextRequest) {
             where: { email },
             select: {
                 id: true,
-                avatar: true,
-                displayName: true,
-                password: true,
                 email: true,
+                password: true,
+                displayName: true,
+                avatar: true,
                 setting: { select: { ecoMode: true, animationEnable: true } },
             },
         });
@@ -42,21 +44,25 @@ export async function POST(request: NextRequest) {
                 {
                     password: ["Mật khẩu không chính xác"],
                 },
-                { status: 401 }
+                { status: HttpStatusCode.Unauthorized }
             );
         }
 
         /* Generate access token */
-
         const accessToken = await jwt.SignToken({
             userId: user.id,
             email: user.email,
         });
 
         /* Set Cookies */
+        const currentTime = new Date().getTime();
+        const expiryTime = currentTime + 7 * 24 * 60 * 60 * 1000;
+        const cookiesMaxAge = Math.floor((expiryTime - currentTime) / 1000);
+
         cookies().set({
-            name: "__watch_party_accessToken",
+            name: CookiesKeys.accessToken,
             value: accessToken || "",
+            maxAge: cookiesMaxAge,
             httpOnly: true,
             path: "/",
         });
@@ -83,9 +89,10 @@ export async function POST(request: NextRequest) {
                     {
                         email: ["Email không tồn tại"],
                     },
-                    { status: 401 }
+                    { status: HttpStatusCode.Unauthorized }
                 );
             }
         }
+        throw error;
     }
 }

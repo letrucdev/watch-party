@@ -6,6 +6,7 @@ import {
     SaveUserToLocalStorage,
 } from "./utils";
 import { ILoginResponse } from "@/types/api.type";
+import { toast } from "sonner";
 
 class Http {
     instance: AxiosInstance;
@@ -19,9 +20,9 @@ class Http {
             (response) => {
                 const { url } = response.config;
                 if (url === routePath.login) {
-                    SaveUserToLocalStorage(
+                    /*                     SaveUserToLocalStorage(
                         (response.data as ILoginResponse).user
-                    );
+                    ); */
                     window.location.href = routePath.home;
                 }
                 if (url === routePath.logout) {
@@ -34,6 +35,7 @@ class Http {
                 if (!IsAcceptErrorStatusCode(error)) {
                     const data: any | undefined = error.response?.data;
                     const message = data.message || error.message;
+                    toast.error("Lỗi", { description: message });
                     console.log(`❌ Unexpected Error: ${message}`);
                 }
                 return Promise.reject(error);

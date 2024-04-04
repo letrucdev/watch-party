@@ -11,20 +11,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "./ThemeToggle";
 import { LogOut, Settings, Users } from "lucide-react";
-import { authPath, routePath } from "@/constants/path";
-import { Button } from "@/components/ui/button";
+import { authPath, privatePath, routePath } from "@/constants/path";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { authApi, userApi } from "@/lib/apis";
+import { Skeleton } from "@components/ui/skeleton";
 
 export const Header = () => {
     const pathname = usePathname();
-    const [isClient, setIsClient] = useState(false);
-    const { authUser, logout } = useAuth();
+    /*  const { authUser, logout, isAuthenticated } = useAuth(); */
 
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
+    const { data, isPending, isSuccess } = useQuery({
+        queryKey: ["user"],
+        staleTime: Infinity,
+        queryFn: userApi.Info,
+    });
+
+    const logoutMutation = useMutation({
+        mutationFn: authApi.Logout,
+    });
+
+    const handleLogout = () => logoutMutation.mutate();
+
+    const user = data?.user;
 
     return (
         <header
@@ -56,14 +66,16 @@ export const Header = () => {
                     suppressHydrationWarning
                 >
                     <ThemeToggle />
-
-                    {isClient && authUser && (
+                    {isPending && (
+                        <Skeleton className="w-10 h-10 bg-primary-foreground rounded-full" />
+                    )}
+                    {privatePath.includes(pathname) && isSuccess && (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Avatar className="ml-4 cursor-pointer">
-                                    <AvatarImage src={authUser.avatar} />
+                                    <AvatarImage src={user?.avatar} />
                                     <AvatarFallback>
-                                        {authUser.displayName.split(" ")[0]}
+                                        {user?.displayName.split(" ")[0]}
                                     </AvatarFallback>
                                 </Avatar>
                             </DropdownMenuTrigger>
@@ -73,10 +85,10 @@ export const Header = () => {
                             >
                                 <span className="flex flex-col p-2">
                                     <p className="text-sm line-clamp-1 text-ellipsis font-semibold">
-                                        {authUser.displayName}
+                                        {user?.displayName}
                                     </p>
                                     <small className="text-muted-foreground line-clamp-1 text-ellipsis">
-                                        {authUser.email}
+                                        {user?.email}
                                     </small>
                                 </span>
                                 <DropdownMenuSeparator />
@@ -93,7 +105,7 @@ export const Header = () => {
                                     </DropdownMenuItem>
                                 </Link>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={logout}>
+                                <DropdownMenuItem onClick={handleLogout}>
                                     <LogOut className="mr-2 h-4 w-4" />
                                     <span>Đăng xuất</span>
                                 </DropdownMenuItem>
@@ -101,14 +113,14 @@ export const Header = () => {
                         </DropdownMenu>
                     )}
 
-                    {isClient && !authUser && (
+                    {/* {isClient && !isAuthenticated && (
                         <Button
                             asChild
                             variant={"outline"}
                         >
                             <Link href={routePath.login}>Đăng nhập</Link>
                         </Button>
-                    )}
+                    )} */}
                 </div>
             </div>
         </header>

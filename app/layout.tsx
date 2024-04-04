@@ -4,8 +4,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header/Header";
 import QueryProviders from "@/app/query-provider";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
-import { useEffect, useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import { cookies } from "next/headers";
+/* import { AuthProvider } from "@/context/AuthContext"; */
+/* import { CookiesKeys } from "@/lib/constants"; */
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +21,10 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const cookieStore = cookies();
+    /*   const acessTokenFromCookies = cookieStore.get(
+        CookiesKeys.accessToken
+    )?.value; */
     return (
         <html
             lang="en"
@@ -31,14 +37,13 @@ export default function RootLayout({
                     enableSystem
                 >
                     <QueryProviders>
-                        <AuthProvider>
-                            <div className={"min-h-screen"}>
-                                <Header />
-                                <div className="container p-4">{children}</div>
-                            </div>
-                        </AuthProvider>
+                        <div className={"min-h-screen"}>
+                            <Header />
+                            <div className="container p-4">{children}</div>
+                        </div>
                     </QueryProviders>
                 </ThemeProvider>
+                <Toaster />
             </body>
         </html>
     );
