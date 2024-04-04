@@ -1,9 +1,9 @@
 import { CookiesKeys } from "@/lib/constants";
-import jwt from "@/lib/jwt";
 import { IChangeUserPassword } from "@api/schema/User";
 import { PrismaClient } from "@prisma/client";
 import { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "@/lib/jwt";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();

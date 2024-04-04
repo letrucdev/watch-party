@@ -1,4 +1,5 @@
 import {
+    IChangeSettingResponse,
     ILoginRequest,
     ILoginResponse,
     IRegisterRequest,
@@ -6,6 +7,7 @@ import {
 } from "@/types/api.type";
 import http from "./http";
 import { IChangeUserPassword, IUpdateUserInfo } from "@api/schema/User";
+import { IUserSetting } from "@/types/user.type";
 
 const authApi = {
     Login: async (data: ILoginRequest) => {
@@ -61,6 +63,18 @@ const userApi = {
         try {
             const updateUser = await http.put<ILoginResponse>("/user", data);
             return updateUser.data;
+        } catch (err) {
+            throw err;
+        }
+    },
+    ChangeSystemSetting: async (data: IUserSetting) => {
+        try {
+            const changeSystemSetting = await http.put<IChangeSettingResponse>(
+                "/user/system-setting",
+                data
+            );
+
+            return changeSystemSetting.data;
         } catch (err) {
             throw err;
         }

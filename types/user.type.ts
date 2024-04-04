@@ -1,6 +1,6 @@
 export interface IUserSetting {
-    animationEnable: number;
-    ecoMode: number;
+    animationEnable: boolean;
+    ecoMode: boolean;
 }
 
 export interface IUser {

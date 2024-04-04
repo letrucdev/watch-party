@@ -28,7 +28,12 @@ export async function POST(request: NextRequest) {
             email,
             displayName,
             password: hashPassword,
-            setting: { create: { ecoMode: 0, animationEnable: 1 } },
+            setting: {
+                create: {
+                    animationEnable: true,
+                    ecoMode: false,
+                },
+            },
         };
 
         await prisma.user.create({

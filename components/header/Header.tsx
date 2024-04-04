@@ -20,7 +20,6 @@ import { Skeleton } from "@components/ui/skeleton";
 
 export const Header = () => {
     const pathname = usePathname();
-    /*  const { authUser, logout, isAuthenticated } = useAuth(); */
 
     const { data, isPending, isSuccess } = useQuery({
         queryKey: ["user"],
@@ -66,7 +65,7 @@ export const Header = () => {
                     suppressHydrationWarning
                 >
                     <ThemeToggle />
-                    {isPending && (
+                    {privatePath.includes(pathname) && isPending && (
                         <Skeleton className="w-10 h-10 bg-primary-foreground rounded-full" />
                     )}
                     {privatePath.includes(pathname) && isSuccess && (

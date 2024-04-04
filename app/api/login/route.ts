@@ -2,11 +2,10 @@ import { NextRequest } from "next/server";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { ILogin, LoginSchema } from "../schema/Auth";
 import { cookies } from "next/headers";
-import jwt from "@/lib/jwt";
-import bcrypt from "bcrypt";
-import _ from "lodash";
 import { HttpStatusCode } from "axios";
 import { CookiesKeys } from "@/lib/constants";
+import jwt from "@/lib/jwt";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 

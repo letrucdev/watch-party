@@ -1,4 +1,4 @@
-import { IUser } from "./user.type";
+import { IUser, IUserSetting } from "./user.type";
 
 export interface ILoginRequest {
     email: string;
@@ -22,4 +22,8 @@ export interface SuccessResponse {
 
 export interface ILoginResponse extends SuccessResponse {
     user: IUser;
+}
+
+export interface IChangeSettingResponse extends SuccessResponse {
+    setting: IUserSetting;
 }

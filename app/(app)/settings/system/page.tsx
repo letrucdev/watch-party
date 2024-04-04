@@ -1,4 +1,12 @@
 "use client";
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -9,40 +17,52 @@ import {
     UpdateSystemSettingSchema,
 } from "@api/schema/User";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { IUserSetting } from "@/types/user.type";
+import { toast } from "sonner";
+import { ILoginResponse } from "@/types/api.type";
+import { Loader2 } from "lucide-react";
 
 export default function SystemSettingPage() {
+    const queryClient = useQueryClient();
     const { data, isPending } = useQuery({
         queryKey: ["user"],
         staleTime: 30 * 60 * 1000,
         queryFn: userApi.Info,
     });
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        setError,
-        formState: { errors },
-    } = useForm<IUpdateSystemSetting>({
-        resolver: zodResolver(UpdateSystemSettingSchema),
-    });
-
     const user = data?.user;
 
-    useEffect(() => {
-        if (user) {
-            reset({
-                animationEnable: Boolean(user.setting.animationEnable),
-                ecoMode: Boolean(user.setting.ecoMode),
+    const form = useForm<IUpdateSystemSetting>({
+        resolver: zodResolver(UpdateSystemSettingSchema),
+        values: {
+            animationEnable: Boolean(user?.setting.animationEnable),
+            ecoMode: Boolean(user?.setting.ecoMode),
+        },
+    });
+
+    const changeSystemSettingMutation = useMutation({
+        mutationFn: (data: IUserSetting) => {
+            const { animationEnable, ecoMode } = data;
+            return userApi.ChangeSystemSetting({
+                animationEnable,
+                ecoMode,
             });
-        }
-    }, [reset, user]);
+        },
+        onSuccess: (data) => {
+            toast.success("Thông báo", { description: data.message });
+            queryClient.setQueryData(["user"], (old: ILoginResponse) => {
+                return {
+                    ...old,
+                    user: { ...old.user, setting: data.setting },
+                };
+            });
+        },
+    });
 
     const onSubmit: SubmitHandler<IUpdateSystemSetting> = (data) =>
-        console.log(data);
+        changeSystemSettingMutation.mutate(data);
 
     return (
         <div className="flex flex-col flex-grow">
@@ -52,52 +72,83 @@ export default function SystemSettingPage() {
                     Cài đặt chung cho trang web
                 </p>
                 <Separator className="my-4" />
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <div className="flex flex-col mt-3 space-y-8">
+                            <div className="flex flex-col space-y-2 w-full">
+                                <Label className="font-medium text-sm">
+                                    Hiệu suất
+                                </Label>
 
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="flex flex-col mt-3 space-y-8">
-                        <div className="flex flex-col space-y-2 w-full">
-                            <Label
-                                htmlFor="oldPassword"
-                                className="font-medium text-sm"
+                                <FormField
+                                    control={form.control}
+                                    name="animationEnable"
+                                    render={({ field }) => (
+                                        <FormItem className=" flex items-center space-x-4 rounded-md border p-4">
+                                            <div className="flex-1 space-y-1">
+                                                <FormLabel>Hoạt ảnh</FormLabel>
+                                                <FormDescription>
+                                                    Bật hoạt ảnh sẽ làm giảm
+                                                    hiệu năng của trang web
+                                                </FormDescription>
+                                            </div>
+                                            <FormControl>
+                                                <Switch
+                                                    disabled={isPending}
+                                                    checked={field.value}
+                                                    onCheckedChange={
+                                                        field.onChange
+                                                    }
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="ecoMode"
+                                    render={({ field }) => (
+                                        <FormItem className=" flex items-center space-x-4 rounded-md border p-4">
+                                            <div className="flex-1 space-y-1">
+                                                <FormLabel>
+                                                    Chế độ cấu hình thấp
+                                                </FormLabel>
+                                                <FormDescription>
+                                                    Chế độ dành cho thiết bị cấu
+                                                    hình thấp, chỉ bật khi thực
+                                                    sự cần!
+                                                </FormDescription>
+                                            </div>
+                                            <FormControl>
+                                                <Switch
+                                                    disabled={isPending}
+                                                    checked={field.value}
+                                                    onCheckedChange={
+                                                        field.onChange
+                                                    }
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+
+                            <Button
+                                className="w-64"
+                                disabled={
+                                    isPending ||
+                                    changeSystemSettingMutation.isPending
+                                }
                             >
-                                Hiệu suất
-                            </Label>
-                            <div className=" flex items-center space-x-4 rounded-md border p-4">
-                                <div className="flex-1 space-y-1">
-                                    <p className="text-sm font-medium leading-none">
-                                        Hoạt ảnh
-                                    </p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Bật hoạt ảnh sẽ làm giảm hiệu năng của
-                                        trang web
-                                    </p>
-                                </div>
-                                <Switch
-                                    disabled={isPending}
-                                    {...register("animationEnable")}
-                                />
-                            </div>
-
-                            <div className=" flex items-center space-x-4 rounded-md border p-4">
-                                <div className="flex-1 space-y-1">
-                                    <p className="text-sm font-medium leading-none">
-                                        Chế độ cấu hình thấp
-                                    </p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Chế độ dành cho thiết bị cấu hình thấp,
-                                        chỉ bật khi thực sự cần!
-                                    </p>
-                                </div>
-                                <Switch
-                                    disabled={isPending}
-                                    {...register("ecoMode")}
-                                />
-                            </div>
+                                {changeSystemSettingMutation.isPending && (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                )}
+                                Cập nhật thay đổi
+                            </Button>
                         </div>
-
-                        <Button className="w-64">Cập nhật thay đổi</Button>
-                    </div>
-                </form>
+                    </form>
+                </Form>
             </div>
         </div>
     );
