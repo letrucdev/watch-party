@@ -1,9 +1,12 @@
 import { CookiesKeys } from "@/lib/constants";
 import jwt from "@/lib/jwt";
 import { IUser } from "@/types/user.type";
+import { UpdateUserInfoSchema } from "@api/schema/User";
 import { PrismaClient } from "@prisma/client";
 import { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import cloudinary from "cloudinary";
+import { IUpdateUserInfoRequest } from "@/types/api.type";
 
 const prisma = new PrismaClient();
 
@@ -49,14 +52,23 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
     const token = request.cookies.get(CookiesKeys.accessToken)?.value;
-    const requestBody: IUser = await request.json();
-    const { email, displayName, avatar } = requestBody;
+    const requestBody: IUpdateUserInfoRequest = await request.json();
+    const { displayName, email, avatar } = requestBody;
 
     if (!token) {
         return NextResponse.json(
             { message: "Không có token được gửi lên" },
             { status: HttpStatusCode.Unauthorized }
         );
+    }
+
+    const validate = await UpdateUserInfoSchema.safeParseAsync(requestBody);
+
+    if (!validate.success) {
+        const formattedError = validate.error.flatten().fieldErrors;
+        return Response.json(formattedError, {
+            status: HttpStatusCode.BadRequest,
+        });
     }
 
     try {
@@ -68,7 +80,7 @@ export async function PUT(request: NextRequest) {
             data: {
                 email,
                 displayName,
-                avatar,
+                avatar: avatar,
             },
             select: {
                 id: true,

@@ -3,17 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/context/AuthContext";
 import { userApi } from "@/lib/apis";
 import { IsAcceptErrorStatusCode } from "@/lib/utils";
 import { FormErrorResponse } from "@/types/api.type";
-import { IUser } from "@/types/user.type";
-import { IUpdateUserInfo, UpdateUserInfoSchema } from "@api/schema/User";
+import { IUpdateUserInfoForm, UpdateUserInfoSchema } from "@api/schema/User";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -31,13 +28,20 @@ export default function ProfileSetting() {
     const {
         register,
         handleSubmit,
-        setValue,
         setError,
         reset,
+        resetField,
+        watch,
         formState: { errors },
-    } = useForm<IUpdateUserInfo>({
+    } = useForm<IUpdateUserInfoForm>({
         resolver: zodResolver(UpdateUserInfoSchema),
+        values: {
+            displayName: user?.displayName || "",
+            email: user?.email || "",
+        },
     });
+
+    const avatarFile = watch("avatar");
 
     const updateUserInfoMutation = useMutation({
         mutationFn: userApi.UpdateInfo,
@@ -49,8 +53,8 @@ export default function ProfileSetting() {
             if (error instanceof AxiosError && IsAcceptErrorStatusCode(error)) {
                 const formError: FormErrorResponse = error.response?.data;
                 Object.keys(formError).forEach((key) => {
-                    setError(key as keyof IUpdateUserInfo, {
-                        message: formError[key as keyof IUpdateUserInfo][0],
+                    setError(key as keyof IUpdateUserInfoForm, {
+                        message: formError[key as keyof IUpdateUserInfoForm][0],
                     });
                 });
             }
@@ -58,15 +62,32 @@ export default function ProfileSetting() {
         },
     });
 
-    const onSubmit: SubmitHandler<IUpdateUserInfo> = (data) =>
-        updateUserInfoMutation.mutate(data);
+    const uploadAvatarMutation = useMutation({
+        mutationFn: userApi.UploadAvatar,
+        onSuccess: () => resetField("avatar"),
+    });
 
-    useEffect(() => {
-        if (user) {
-            setValue("displayName", user.displayName);
-            setValue("email", user.email);
+    const onSubmit: SubmitHandler<IUpdateUserInfoForm> = async (data) => {
+        let uploadAvatarResponse;
+        const { displayName, email } = data;
+
+        if (avatarFile && avatarFile.length > 0) {
+            const form = new FormData();
+            form.append("avatar", avatarFile[0]);
+            uploadAvatarResponse = await uploadAvatarMutation.mutateAsync(form);
         }
-    }, [user, setValue]);
+
+        updateUserInfoMutation.mutate({
+            displayName,
+            email,
+            avatar: uploadAvatarResponse?.avatar,
+        });
+    };
+
+    const isPendingApi =
+        uploadAvatarMutation.isPending ||
+        updateUserInfoMutation.isPending ||
+        isPending;
 
     return (
         <div className="flex flex-col flex-grow">
@@ -89,7 +110,7 @@ export default function ProfileSetting() {
                         </Label>
                         <Input
                             {...register("displayName")}
-                            disabled={isPending}
+                            disabled={isPendingApi}
                             id="displayName"
                         />
                         <p
@@ -114,7 +135,7 @@ export default function ProfileSetting() {
                         </Label>
                         <Input
                             {...register("email")}
-                            disabled={isPending}
+                            disabled={isPendingApi}
                             id="email"
                         />
                         <p
@@ -130,23 +151,33 @@ export default function ProfileSetting() {
                     </div>
 
                     {/* Avatar */}
-                    {/*     <div className="flex flex-col space-y-2 w-full">
+                    <div className="flex flex-col space-y-2 w-full">
                         <Label htmlFor="avatar">Ảnh đại diện</Label>
                         <Input
+                            {...register("avatar")}
                             id="avatar"
                             type="file"
+                            accept="image/png, image/jpeg"
+                            disabled={isPendingApi}
                         />
-                        <p className="text-muted-foreground text-[0.8rem]">
-                            {`Ảnh đại diện phải có dung lượng < 10mb`}
+                        <p
+                            className={`${
+                                errors.avatar
+                                    ? "text-destructive"
+                                    : "text-muted-foreground"
+                            } text-[0.8rem]`}
+                        >
+                            {errors.avatar?.message ||
+                                "Ảnh đại diện phải có dung lượng < 5mb"}
                         </p>
-                    </div> */}
+                    </div>
 
                     <Button
-                        disabled={isPending || updateUserInfoMutation.isPending}
+                        disabled={isPendingApi}
                         className="w-64"
                         type="submit"
                     >
-                        {updateUserInfoMutation.isPending && (
+                        {isPendingApi && (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         )}
                         Cập nhật tài khoản

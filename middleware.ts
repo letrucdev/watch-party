@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
         return response;
     }
 
-    if (authPath.includes(pathname) && isAuth) {
+    if (authPath.some((path) => path.startsWith(pathname)) && isAuth) {
         return NextResponse.redirect(new URL(routePath.home, request.url));
     }
 

@@ -1,4 +1,6 @@
+import { z } from "zod";
 import { IUser, IUserSetting } from "./user.type";
+import { UpdateUserInfoSchema } from "@api/schema/User";
 
 export interface ILoginRequest {
     email: string;
@@ -12,6 +14,11 @@ export interface IRegisterRequest {
     displayName: string;
 }
 
+export interface IUpdateUserInfoRequest
+    extends Omit<z.infer<typeof UpdateUserInfoSchema>, "avatar"> {
+    avatar?: string;
+}
+
 export interface FormErrorResponse {
     [key: string]: string[];
 }
@@ -22,6 +29,10 @@ export interface SuccessResponse {
 
 export interface ILoginResponse extends SuccessResponse {
     user: IUser;
+}
+
+export interface IUploadAvatarResponse extends SuccessResponse {
+    avatar: string;
 }
 
 export interface IChangeSettingResponse extends SuccessResponse {

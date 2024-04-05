@@ -1,3 +1,4 @@
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE } from "@/lib/constants";
 import { z } from "zod";
 
 export const UpdateUserInfoSchema = z.object({
@@ -13,6 +14,27 @@ export const UpdateUserInfoSchema = z.object({
         })
         .min(1, { message: "Tên hiển thị không được bỏ trống" })
         .max(25, { message: "Tên hiển thị không được dài quá 25 ký tự" }),
+    avatar: z
+        .custom<FileList>()
+        .refine(
+            (files) =>
+                files.length === 1
+                    ? files[0].size <= MAX_IMAGE_SIZE
+                        ? true
+                        : false
+                    : true,
+            "Dung lượng file ảnh không được vượt quá 5mb"
+        )
+        .refine(
+            (files) =>
+                files.length === 1
+                    ? ACCEPTED_IMAGE_TYPES.includes(files[0].type)
+                        ? true
+                        : false
+                    : true,
+            "Định dạng file phải là .png hoặc .jpg"
+        )
+        .optional(),
 });
 
 export const ChangeUserPasswordSchema = z
@@ -37,6 +59,6 @@ export const UpdateSystemSettingSchema = z.object({
     ecoMode: z.boolean(),
 });
 
-export type IUpdateUserInfo = z.infer<typeof UpdateUserInfoSchema>;
+export type IUpdateUserInfoForm = z.infer<typeof UpdateUserInfoSchema>;
 export type IChangeUserPassword = z.infer<typeof ChangeUserPasswordSchema>;
 export type IUpdateSystemSetting = z.infer<typeof UpdateSystemSettingSchema>;

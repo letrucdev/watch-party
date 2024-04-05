@@ -1,7 +1,7 @@
 const settingsPath = "/settings";
 
 const routePath = {
-    home: "/",
+    home: "/home",
     login: "/login",
     logout: "/logout",
     register: "/register",

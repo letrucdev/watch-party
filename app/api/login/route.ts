@@ -54,9 +54,7 @@ export async function POST(request: NextRequest) {
         });
 
         /* Set Cookies */
-        const currentTime = new Date().getTime();
-        const expiryTime = currentTime + 7 * 24 * 60 * 60 * 1000;
-        const cookiesMaxAge = Math.floor((expiryTime - currentTime) / 1000);
+        const cookiesMaxAge = 60 * 60 * 24 * 7; //1 Week
 
         cookies().set({
             name: CookiesKeys.accessToken,

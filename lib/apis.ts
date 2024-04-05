@@ -3,6 +3,8 @@ import {
     ILoginRequest,
     ILoginResponse,
     IRegisterRequest,
+    IUpdateUserInfoRequest,
+    IUploadAvatarResponse,
     SuccessResponse,
 } from "@/types/api.type";
 import http from "./http";
@@ -59,9 +61,20 @@ const userApi = {
             throw err;
         }
     },
-    UpdateInfo: async (data: IUpdateUserInfo) => {
+    UpdateInfo: async (data: IUpdateUserInfoRequest) => {
         try {
             const updateUser = await http.put<ILoginResponse>("/user", data);
+            return updateUser.data;
+        } catch (err) {
+            throw err;
+        }
+    },
+    UploadAvatar: async (formData: FormData) => {
+        try {
+            const updateUser = await http.post<IUploadAvatarResponse>(
+                "/user/avatar",
+                formData
+            );
             return updateUser.data;
         } catch (err) {
             throw err;
