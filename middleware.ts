@@ -4,8 +4,11 @@ import { authPath, privatePath, routePath } from "./constants/path";
 import jwt from "./lib/jwt";
 import { CookiesKeys } from "./lib/constants";
 
-const isAuthenticated = (accessToken: string) => {
+const isAuthenticated = (accessToken?: string) => {
     try {
+        if (!accessToken) {
+            return false;
+        }
         return jwt.VerifyToken(accessToken);
     } catch (error) {
         throw error;
@@ -19,9 +22,9 @@ export async function middleware(request: NextRequest) {
         CookiesKeys.accessToken
     )?.value;
 
-    const isAuth = await isAuthenticated(accessTokenFromCookies!);
+    const isAuth = await isAuthenticated(accessTokenFromCookies);
 
-    if (privatePath.some((path) => path.startsWith(pathname)) && !isAuth) {
+    if (privatePath.some((path) => pathname.startsWith(path)) && !isAuth) {
         const response = NextResponse.redirect(
             new URL(routePath.login, request.url)
         );
@@ -29,7 +32,7 @@ export async function middleware(request: NextRequest) {
         return response;
     }
 
-    if (authPath.some((path) => path.startsWith(pathname)) && isAuth) {
+    if (authPath.some((path) => pathname.startsWith(path)) && isAuth) {
         return NextResponse.redirect(new URL(routePath.home, request.url));
     }
 

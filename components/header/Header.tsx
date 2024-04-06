@@ -27,6 +27,8 @@ export const Header = () => {
     const searchParams = useSearchParams();
     const search = searchParams.get("q");
 
+    const isPrivatePath = privatePath.some((path) => pathname.startsWith(path));
+
     const {
         register,
         handleSubmit,
@@ -43,6 +45,7 @@ export const Header = () => {
         queryKey: ["user"],
         staleTime: Infinity,
         queryFn: userApi.Info,
+        enabled: isPrivatePath,
     });
 
     const logoutMutation = useMutation({
@@ -50,8 +53,6 @@ export const Header = () => {
     });
 
     const handleLogout = () => logoutMutation.mutate();
-
-    const isPrivatePath = privatePath.some((path) => pathname.startsWith(path));
 
     const user = data?.user;
 
