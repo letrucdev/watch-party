@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     productionBrowserSourceMaps: false,
-    experimental: {
-        missingSuspenseWithCSRBailout: false,
-    },
     images: {
         remotePatterns: [
             {

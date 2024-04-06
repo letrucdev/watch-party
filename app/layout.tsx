@@ -6,6 +6,7 @@ import { Toaster } from "@components/ui/sonner";
 import ProgressBarProviders from "@app/progress-bar-provider";
 import QueryProviders from "@app/query-provider";
 import "./globals.css";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +34,9 @@ export default function RootLayout({
                     <ProgressBarProviders>
                         <QueryProviders>
                             <div className={"min-h-screen"}>
-                                <Header />
+                                <Suspense>
+                                    <Header />
+                                </Suspense>
                                 <div className="container p-4">{children}</div>
                             </div>
                         </QueryProviders>
