@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "prisma generate && next dev --turbo",
+        "dev": "prisma generate && next dev",
         "build": "prisma generate && next build",
         "start": "prisma generate && next start",
         "lint": "next lint"
@@ -47,6 +47,7 @@
         "clsx": "^2.1.0",
         "cmdk": "^1.0.0",
         "date-fns": "^3.6.0",
+        "dayjs": "^1.11.10",
         "embla-carousel-react": "^8.0.0",
         "input-otp": "^1.2.3",
         "jose": "^5.2.3",
@@ -54,6 +55,7 @@
         "lucide-react": "^0.363.0",
         "next": "14.1.4",
         "next-cloudinary": "^6.3.0",
+        "next-nprogress-bar": "^2.3.11",
         "next-themes": "^0.3.0",
         "prisma": "^5.12.0",
         "react": "^18",

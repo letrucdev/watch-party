@@ -6,12 +6,12 @@ import {
     FormField,
     FormItem,
     FormLabel,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { userApi } from "@/lib/apis";
+} from "@components/ui/form";
+import { Button } from "@components/ui/button";
+import { Label } from "@components/ui/label";
+import { Separator } from "@components/ui/separator";
+import { Switch } from "@components/ui/switch";
+import { userApi } from "@lib/apis";
 import {
     IUpdateSystemSetting,
     UpdateSystemSettingSchema,
@@ -19,9 +19,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { IUserSetting } from "@/types/user.type";
+import { IUserSetting } from "@type/user.type";
+import { ILoginResponse } from "@type/api.type";
 import { toast } from "sonner";
-import { ILoginResponse } from "@/types/api.type";
 import { Loader2 } from "lucide-react";
 
 export default function SystemSettingPage() {

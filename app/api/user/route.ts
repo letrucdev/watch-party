@@ -1,12 +1,10 @@
 import { CookiesKeys } from "@/lib/constants";
-import jwt from "@/lib/jwt";
-import { IUser } from "@/types/user.type";
 import { UpdateUserInfoSchema } from "@api/schema/User";
 import { PrismaClient } from "@prisma/client";
 import { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "cloudinary";
 import { IUpdateUserInfoRequest } from "@/types/api.type";
+import jwt from "@/lib/jwt";
 
 const prisma = new PrismaClient();
 
@@ -28,6 +26,7 @@ export async function GET(request: NextRequest) {
                 email: true,
                 displayName: true,
                 avatar: true,
+                changedEmail: true,
                 setting: {
                     select: {
                         animationEnable: true,
@@ -73,20 +72,41 @@ export async function PUT(request: NextRequest) {
 
     try {
         const payload = await jwt.VerifyToken(token);
+
+        const user = await prisma.user.findUnique({
+            select: {
+                email: true,
+                changedEmail: true,
+            },
+            where: {
+                id: payload?.userId as number,
+            },
+        });
+
+        const isChangedEmail = user?.changedEmail;
+
         const updateUser = await prisma.user.update({
             where: {
                 id: payload?.userId as number,
             },
-            data: {
-                email,
-                displayName,
-                avatar: avatar,
-            },
+            data:
+                isChangedEmail || email === user?.email
+                    ? {
+                          displayName,
+                          avatar,
+                      }
+                    : {
+                          email,
+                          displayName,
+                          avatar,
+                          changedEmail: true,
+                      },
             select: {
                 id: true,
                 displayName: true,
                 email: true,
                 avatar: true,
+                changedEmail: true,
                 setting: {
                     select: {
                         ecoMode: true,

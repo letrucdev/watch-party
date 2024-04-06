@@ -6,6 +6,7 @@ const routePath = {
     logout: "/logout",
     register: "/register",
     party: "/party",
+    search: "/search",
     settingProfile: settingsPath + "/profile",
     changePassword: settingsPath + "/change-password",
     settingSystem: settingsPath + "/system",
@@ -17,6 +18,7 @@ const privatePath = [
     routePath.settingProfile,
     routePath.changePassword,
     routePath.settingSystem,
+    routePath.search,
 ];
 
 const authPath = [routePath.login, routePath.register];

@@ -1,11 +1,11 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@components/ui/button";
+import { Input } from "@components/ui/input";
+import { Label } from "@components/ui/label";
+import { Separator } from "@components/ui/separator";
 import { userApi } from "@/lib/apis";
 import { IsAcceptErrorStatusCode } from "@/lib/utils";
-import { FormErrorResponse } from "@/types/api.type";
+import { FormErrorResponse } from "@type/api.type";
 import { IUpdateUserInfoForm, UpdateUserInfoSchema } from "@api/schema/User";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -135,7 +135,7 @@ export default function ProfileSetting() {
                         </Label>
                         <Input
                             {...register("email")}
-                            disabled={isPendingApi}
+                            disabled={isPendingApi || user?.changedEmail}
                             id="email"
                         />
                         <p

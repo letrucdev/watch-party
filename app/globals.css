@@ -66,6 +66,14 @@
     }
 }
 
+.light #nprogress .bar {
+    background: hsl(var(--foreground)) !important;
+}
+
+.dark #nprogress .bar {
+    background: hsl(var(--foreground)) !important;
+}
+
 @layer base {
     * {
         @apply border-border;

@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Header } from "@/components/header/Header";
-import QueryProviders from "@/app/query-provider";
+import { ThemeProvider } from "@components/theme-provider";
+import { Header } from "@components/header/Header";
+import { Toaster } from "@components/ui/sonner";
+import ProgressBarProviders from "@app/progress-bar-provider";
+import QueryProviders from "@app/query-provider";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-import { cookies } from "next/headers";
-/* import { AuthProvider } from "@/context/AuthContext"; */
-/* import { CookiesKeys } from "@/lib/constants"; */
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +19,6 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const cookieStore = cookies();
-    /*   const acessTokenFromCookies = cookieStore.get(
-        CookiesKeys.accessToken
-    )?.value; */
     return (
         <html
             lang="en"
@@ -36,12 +30,14 @@ export default function RootLayout({
                     defaultTheme="system"
                     enableSystem
                 >
-                    <QueryProviders>
-                        <div className={"min-h-screen"}>
-                            <Header />
-                            <div className="container p-4">{children}</div>
-                        </div>
-                    </QueryProviders>
+                    <ProgressBarProviders>
+                        <QueryProviders>
+                            <div className={"min-h-screen"}>
+                                <Header />
+                                <div className="container p-4">{children}</div>
+                            </div>
+                        </QueryProviders>
+                    </ProgressBarProviders>
                 </ThemeProvider>
                 <Toaster />
             </body>

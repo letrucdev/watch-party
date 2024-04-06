@@ -1,19 +1,19 @@
 "use client";
 
 import { Button } from "@components/ui/button";
-import { routePath } from "@/constants/path";
+import { routePath } from "@constants/path";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ILogin, LoginSchema } from "@api/schema/Auth";
 import { Input } from "@components/ui/input";
-import { FormErrorResponse, ILoginRequest } from "@/types/api.type";
+import { FormErrorResponse, ILoginRequest } from "@type/api.type";
+import { useMutation } from "@tanstack/react-query";
+import { authApi } from "@lib/apis";
+import { AxiosError } from "axios";
+import { IsAcceptErrorStatusCode } from "@lib/utils";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useMutation } from "@tanstack/react-query";
-import { authApi } from "@/lib/apis";
-import { AxiosError } from "axios";
-import { IsAcceptErrorStatusCode } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
     const {

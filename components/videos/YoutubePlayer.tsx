@@ -7,10 +7,9 @@ import { Button } from "../ui/button";
 
 interface IYoutubePlayer {
     videoId: string;
-    videoTitle: string;
 }
 
-export default function YoutubePlayer({ videoTitle, videoId }: IYoutubePlayer) {
+export default function YoutubePlayer({ videoId }: IYoutubePlayer) {
     const opts = {
         playerVars: {
             // https://developers.google.com/youtube/player_parameters
@@ -26,7 +25,9 @@ export default function YoutubePlayer({ videoTitle, videoId }: IYoutubePlayer) {
                 videoId={videoId}
                 opts={opts} // defaults -> ''
             />
-            <h2 className="font-semibold line-clamp-2 text-xl">{videoTitle}</h2>
+            <h2 className="font-semibold line-clamp-2 text-xl">
+                {"TIÊU ĐỀ VIDEO"}
+            </h2>
 
             <div className="flex mt-4 space-x-4 w-full">
                 <div className="flex mr-auto">

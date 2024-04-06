@@ -19,6 +19,11 @@
         ],
         "paths": {
             "@components/*": ["./components/*"],
+            "@app/*": ["./app/*"],
+            "@lib/*": ["./lib/*"],
+            "@constants/*": ["./constants/*"],
+            "@utils/*": ["./utils/*"],
+            "@type/*": ["./types/*"],
             "@api/*": ["./app/api/*"],
             "@/*": ["./*"]
         }

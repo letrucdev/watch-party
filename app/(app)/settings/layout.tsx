@@ -1,5 +1,5 @@
-import { Separator } from "@/components/ui/separator";
-import { SettingNavigation } from "@/components/settings/SettingNavigation";
+import { Separator } from "@components/ui/separator";
+import { SettingNavigation } from "@components/settings/SettingNavigation";
 
 export default function SettingsLayout({
     children,

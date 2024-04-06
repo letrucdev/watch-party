@@ -14,4 +14,4 @@ export const acceptErrorStatusCode = [
 ];
 
 export const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg"];
-export const MAX_IMAGE_SIZE = 1024 * 1024 * 5; //10mb
+export const MAX_IMAGE_SIZE = 1024 * 1024 * 5; //5mb

@@ -1,21 +1,21 @@
 "use client";
 
 import { Button } from "@components/ui/button";
-import { routePath } from "@/constants/path";
+import { routePath } from "@constants/path";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IRegister, RegisterSchema } from "@api/schema/Auth";
-import { authApi } from "@/lib/apis";
+import { authApi } from "@lib/apis";
 import { Input } from "@components/ui/input";
 import { useMutation } from "@tanstack/react-query";
-import Image from "next/image";
-import Link from "next/link";
 import { AxiosError } from "axios";
-import { FormErrorResponse } from "@/types/api.type";
+import { FormErrorResponse } from "@type/api.type";
 import { IsAcceptErrorStatusCode } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function RegisterPage() {
     const router = useRouter();

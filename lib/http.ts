@@ -20,9 +20,6 @@ class Http {
             (response) => {
                 const { url } = response.config;
                 if (url === routePath.login) {
-                    /*                     SaveUserToLocalStorage(
-                        (response.data as ILoginResponse).user
-                    ); */
                     window.location.href = routePath.home;
                 }
                 if (url === routePath.logout) {
@@ -34,7 +31,7 @@ class Http {
             (error: AxiosError) => {
                 if (!IsAcceptErrorStatusCode(error)) {
                     const data: any | undefined = error.response?.data;
-                    const message = data.message || error.message;
+                    const message = data?.message || error?.message;
                     toast.error("Lỗi", { description: message });
                     console.log(`❌ Unexpected Error: ${message}`);
                 }

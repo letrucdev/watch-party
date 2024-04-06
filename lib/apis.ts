@@ -3,12 +3,14 @@ import {
     ILoginRequest,
     ILoginResponse,
     IRegisterRequest,
+    ISearchVideoResult,
     IUpdateUserInfoRequest,
     IUploadAvatarResponse,
+    IYoutubeVideoItem,
     SuccessResponse,
 } from "@/types/api.type";
 import http from "./http";
-import { IChangeUserPassword, IUpdateUserInfo } from "@api/schema/User";
+import { IChangeUserPassword } from "@api/schema/User";
 import { IUserSetting } from "@/types/user.type";
 
 const authApi = {
@@ -71,11 +73,11 @@ const userApi = {
     },
     UploadAvatar: async (formData: FormData) => {
         try {
-            const updateUser = await http.post<IUploadAvatarResponse>(
+            const uploadAvatar = await http.post<IUploadAvatarResponse>(
                 "/user/avatar",
                 formData
             );
-            return updateUser.data;
+            return uploadAvatar.data;
         } catch (err) {
             throw err;
         }
@@ -94,4 +96,32 @@ const userApi = {
     },
 };
 
-export { authApi, userApi };
+const youtubeApi = {
+    Videos: async () => {
+        try {
+            const videos = await http.get<IYoutubeVideoItem[]>(
+                "/youtube/videos"
+            );
+            return videos.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    Search: async (query: string) => {
+        try {
+            const search = await http.get<ISearchVideoResult>(
+                "/youtube/search",
+                {
+                    params: {
+                        q: query,
+                    },
+                }
+            );
+            return search.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+};
+
+export { authApi, userApi, youtubeApi };

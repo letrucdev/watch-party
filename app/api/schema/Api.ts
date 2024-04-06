@@ -11,3 +11,9 @@ export const UploadAvatarSchema = z.object({
             message: "Dung lượng file ảnh không được vượt quá 5mb",
         }),
 });
+
+export const SearchVideoSchema = z.object({
+    query: z.string().refine((query) => query.trim().length > 0),
+});
+
+export type ISearchVideoForm = z.infer<typeof SearchVideoSchema>;
