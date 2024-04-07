@@ -17,6 +17,7 @@ import { Skeleton } from "@components/ui/skeleton";
 import { UserAvatar } from "@components/ui/user-avatar";
 import { SearchForm } from "@components/header/SearchForm";
 import { useUser } from "@/hooks/useUser";
+import { Suspense } from "react";
 
 export const Header = () => {
     const pathname = usePathname();
@@ -46,7 +47,11 @@ export const Header = () => {
                     </Link>
                 </h1>
 
-                {isPrivatePath && <SearchForm />}
+                {isPrivatePath && (
+                    <Suspense>
+                        <SearchForm />
+                    </Suspense>
+                )}
 
                 <div className={"flex flex-shrink-0 ml-auto space-x-2"}>
                     <ThemeToggle />
