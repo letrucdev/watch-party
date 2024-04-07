@@ -12,8 +12,16 @@ export const UploadAvatarSchema = z.object({
         }),
 });
 
+export const AddVideoToPlaylistSchema = z.object({
+    videoId: z.string(),
+    videoTitle: z.string(),
+    thumbnail: z.string(),
+    channelTitle: z.string(),
+});
+
 export const SearchVideoSchema = z.object({
     query: z.string().refine((query) => query.trim().length > 0),
 });
 
 export type ISearchVideoForm = z.infer<typeof SearchVideoSchema>;
+export type IAddVideoToPlaylist = z.infer<typeof AddVideoToPlaylistSchema>;

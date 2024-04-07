@@ -1,17 +1,12 @@
 "use client";
 import React from "react";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { youtubeApi } from "@/lib/apis";
 import { VideoSkeleton } from "./VideoSkeleton";
 import Video from "./Video";
+import { useTrendingVideos } from "@/hooks/useTrendingVideos";
 
 export const TrendingVideos = ({ className }: { className?: string }) => {
-    const { data: videos, isPending } = useQuery({
-        queryKey: ["youtubeVideos"],
-        queryFn: youtubeApi.Videos,
-        staleTime: Infinity,
-    });
+    const { videos, isPending } = useTrendingVideos();
 
     return (
         <div className={cn("flex flex-wrap -mx-2", className)}>

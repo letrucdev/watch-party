@@ -6,12 +6,15 @@ import { Toaster } from "@components/ui/sonner";
 import ProgressBarProviders from "@app/progress-bar-provider";
 import QueryProviders from "@app/query-provider";
 import "./globals.css";
-import { Suspense } from "react";
+import { RoomProvider } from "@/context/RoomContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Watch Party",
+    title: {
+        template: "%s | Watch Party",
+        default: "Watch Party", // a default is required when creating a template
+    },
     description: "Watch Party code by letrucdev",
 };
 
@@ -31,18 +34,20 @@ export default function RootLayout({
                     defaultTheme="system"
                     enableSystem
                 >
-                    <ProgressBarProviders>
-                        <QueryProviders>
-                            <div className={"min-h-screen"}>
-                                <Suspense>
+                    <QueryProviders>
+                        <ProgressBarProviders>
+                            <RoomProvider>
+                                <div className={"min-h-screen"}>
                                     <Header />
-                                </Suspense>
-                                <div className="container p-4">{children}</div>
-                            </div>
-                        </QueryProviders>
-                    </ProgressBarProviders>
+                                    <div className="container p-4">
+                                        {children}
+                                    </div>
+                                    <Toaster />
+                                </div>
+                            </RoomProvider>
+                        </ProgressBarProviders>
+                    </QueryProviders>
                 </ThemeProvider>
-                <Toaster />
             </body>
         </html>
     );

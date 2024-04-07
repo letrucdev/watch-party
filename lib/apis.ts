@@ -1,7 +1,12 @@
 import {
+    IAddVideoToPlaylistResponse,
     IChangeSettingResponse,
+    ICreatePartyResponse,
+    IGetPartyResponse,
+    IJoinPartyResponse,
     ILoginRequest,
     ILoginResponse,
+    IPlaylistVideo,
     IRegisterRequest,
     ISearchVideoResult,
     IUpdateUserInfoRequest,
@@ -96,6 +101,64 @@ const userApi = {
     },
 };
 
+const partyApi = {
+    Get: async (partyId: string) => {
+        try {
+            const party = await http.get<IGetPartyResponse>(
+                `/party/${partyId}`
+            );
+
+            return party.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    Create: async (video: IPlaylistVideo) => {
+        try {
+            const createParty = await http.post<ICreatePartyResponse>(
+                "/party",
+                video
+            );
+
+            return createParty.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    Join: async (partyId: string) => {
+        try {
+            const joinParty = await http.post<IJoinPartyResponse>(
+                `/party/${partyId}/join`
+            );
+
+            return joinParty.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    AddVideoToPlaylist: async (partyId: string, video: IPlaylistVideo) => {
+        try {
+            const addVideo = await http.post<IAddVideoToPlaylistResponse>(
+                `/party/${partyId}/playlist`,
+                video
+            );
+
+            return addVideo.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    ExitRoom: async (partyId: string) => {
+        try {
+            const exitRoom = await http.delete<any>(`/party/${partyId}/exit`);
+
+            return exitRoom.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+};
+
 const youtubeApi = {
     Videos: async () => {
         try {
@@ -124,4 +187,4 @@ const youtubeApi = {
     },
 };
 
-export { authApi, userApi, youtubeApi };
+export { authApi, userApi, partyApi, youtubeApi };

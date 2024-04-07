@@ -27,6 +27,41 @@ export interface SuccessResponse {
     message: string;
 }
 
+export interface IPlaylistVideo {
+    videoId: string;
+    thumbnail: string;
+    videoTitle: string;
+    channelTitle: string;
+}
+
+export interface IPartyPlaylist {
+    video: IPlaylistVideo;
+}
+
+export interface IPartyParticipant {
+    user: Pick<IUser, "id" | "displayName" | "avatar">;
+}
+
+export interface IJoinPartyResponse extends SuccessResponse {
+    party: IGetPartyResponse;
+}
+
+export interface ICreatePartyResponse extends SuccessResponse {
+    partyId: string;
+}
+
+export interface IGetPartyResponse {
+    id: number;
+    ownerId: number;
+    partyId: string;
+    partyParticipants: IPartyParticipant[];
+    partyPlaylist: IPartyPlaylist[];
+}
+
+export interface IAddVideoToPlaylistResponse extends SuccessResponse {
+    video: IPlaylistVideo;
+}
+
 export interface ILoginResponse extends SuccessResponse {
     user: IUser;
 }

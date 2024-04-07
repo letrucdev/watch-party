@@ -31,75 +31,10 @@ interface ITabs {
 }
 
 export default function Menu() {
-    const [tabMenu, setTabMenu] = useState<string>("chat");
-
-    const participants = useMemo(() => {
-        return [
-            {
-                id: 1,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user1",
-            },
-            {
-                id: 2,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user2",
-            },
-            {
-                id: 3,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user3",
-            },
-            {
-                id: 4,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user4",
-            },
-            {
-                id: 5,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user5",
-            },
-            {
-                id: 6,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user6",
-            },
-            {
-                id: 7,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user7",
-            },
-            {
-                id: 8,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user8",
-            },
-            {
-                id: 9,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user9",
-            },
-            {
-                id: 10,
-                avatarSrc: "https://github.com/shadcn.png",
-                username: "user10",
-            },
-        ];
-    }, []);
+    const [tabMenu, setTabMenu] = useState<string>("playlist");
 
     const tabs: ITabs = useMemo(() => {
         return {
-            chat: {
-                icon: (
-                    <MessageSquare
-                        size={16}
-                        className="mr-1"
-                    />
-                ),
-                title: "Trò chuyện",
-                component: <Chat />,
-            },
             playlist: {
                 icon: (
                     <ListVideo
@@ -110,6 +45,17 @@ export default function Menu() {
                 title: "Danh sách phát",
                 component: <PlayList />,
             },
+            chat: {
+                icon: (
+                    <MessageSquare
+                        size={16}
+                        className="mr-1"
+                    />
+                ),
+                title: "Trò chuyện",
+                component: <Chat />,
+            },
+
             participants: {
                 icon: (
                     <Users
@@ -118,10 +64,10 @@ export default function Menu() {
                     />
                 ),
                 title: "Người tham gia",
-                component: <ParticipantList participants={participants} />,
+                component: <ParticipantList />,
             },
         };
-    }, [participants]);
+    }, []);
 
     const handleChangeTab = (tab: string) => setTabMenu(tab);
 

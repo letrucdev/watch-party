@@ -15,13 +15,15 @@ datasource db {
 }
 
 model User {
-  id           Int          @id @default(autoincrement())
-  email        String       @unique
-  changedEmail Boolean      @default(false)
-  displayName  String
-  password     String
-  avatar       String?
-  setting      UserSetting?
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
+  changedEmail      Boolean            @default(false)
+  displayName       String
+  password          String
+  avatar            String?
+  setting           UserSetting?
+  partyRoom         PartyRoom?
+  partyParticipants PartyParticipants?
 }
 
 model UserSetting {
@@ -30,4 +32,28 @@ model UserSetting {
   userId          Int     @unique
   animationEnable Boolean @default(true)
   ecoMode         Boolean @default(false)
+}
+
+model PartyRoom {
+  id                Int                 @id @default(autoincrement())
+  partyId           String              @unique
+  user              User                @relation(fields: [ownerId], references: [id])
+  ownerId           Int                 @unique
+  partyParticipants PartyParticipants[]
+  partyPlaylist     PartyPlaylist[]
+}
+
+model PartyParticipants {
+  id            Int       @id @default(autoincrement())
+  partyRoom     PartyRoom @relation(fields: [partyId], references: [partyId])
+  partyId       String
+  user          User      @relation(fields: [participantId], references: [id])
+  participantId Int       @unique
+}
+
+model PartyPlaylist {
+  id        Int       @id @default(autoincrement())
+  partyRoom PartyRoom @relation(fields: [partyId], references: [partyId])
+  partyId   String
+  video     Json
 }

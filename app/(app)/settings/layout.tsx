@@ -1,5 +1,10 @@
 import { Separator } from "@components/ui/separator";
 import { SettingNavigation } from "@components/settings/SettingNavigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Cài đặt",
+};
 
 export default function SettingsLayout({
     children,

@@ -2,9 +2,8 @@
 import { cn } from "@/lib/utils";
 import { VideoSearchItem } from "./VideoSearchItem";
 import { VideoSearchItemSkeleton } from "./VideoSearchItemSkeleton";
-import { useQuery } from "@tanstack/react-query";
-import { youtubeApi } from "@lib/apis";
 import { formatNumberSocialStyle } from "@utils/index";
+import { useSearchVideos } from "@/hooks/useSearchVideos";
 
 interface ISearchVideos {
     className?: string;
@@ -12,18 +11,14 @@ interface ISearchVideos {
 }
 
 export const SearchVideos = ({ className, query }: ISearchVideos) => {
-    const { data, isPending } = useQuery({
-        queryKey: ["search", query],
-        queryFn: () => youtubeApi.Search(query),
-        staleTime: 60 * 1000 * 180,
-    });
+    const { videos, totalResults, isPending } = useSearchVideos(query);
 
     return (
         <>
             <div className="flex flex-col mb-3">
                 <h2 className="text-xl font-semibold">Kết quả tìm kiếm</h2>
                 <p className="text-muted-foreground">
-                    {formatNumberSocialStyle(data?.totalResults || 0)} kết quả
+                    {formatNumberSocialStyle(totalResults || 0)} kết quả
                 </p>
             </div>
             <div className={cn("flex flex-col -mx-2", className)}>
@@ -33,8 +28,8 @@ export const SearchVideos = ({ className, query }: ISearchVideos) => {
                         .map((_, index) => (
                             <VideoSearchItemSkeleton key={index} />
                         ))}
-                {data &&
-                    data.items.map((video) => {
+                {videos &&
+                    videos.map((video) => {
                         return (
                             <VideoSearchItem
                                 key={video.id.videoId}

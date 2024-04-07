@@ -1,60 +1,34 @@
 "use client";
 import Link from "next/link";
-import { InputSearch } from "@/components/ui/input-search";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "./ThemeToggle";
 import { LogOut, Settings, Users } from "lucide-react";
 import { privatePath, routePath } from "@/constants/path";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { authApi, userApi } from "@/lib/apis";
+import { usePathname } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { authApi } from "@/lib/apis";
 import { Skeleton } from "@components/ui/skeleton";
 import { UserAvatar } from "@components/ui/user-avatar";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { ISearchVideoForm, SearchVideoSchema } from "@api/schema/Api";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { SearchForm } from "@components/header/SearchForm";
+import { useUser } from "@/hooks/useUser";
 
 export const Header = () => {
     const pathname = usePathname();
-    const router = useRouter();
-
-    const searchParams = useSearchParams();
-    const search = searchParams.get("q");
-
     const isPrivatePath = privatePath.some((path) => pathname.startsWith(path));
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<ISearchVideoForm>({
-        resolver: zodResolver(SearchVideoSchema),
-        values: { query: search ?? "" },
-    });
-
-    const onSubmit: SubmitHandler<ISearchVideoForm> = (data) =>
-        router.push(`${routePath.search}?q=${data.query}`);
-
-    const { data, isPending, isSuccess } = useQuery({
-        queryKey: ["user"],
-        staleTime: Infinity,
-        queryFn: userApi.Info,
-        enabled: isPrivatePath,
-    });
+    const { user, isPending } = useUser();
 
     const logoutMutation = useMutation({
         mutationFn: authApi.Logout,
     });
 
     const handleLogout = () => logoutMutation.mutate();
-
-    const user = data?.user;
 
     return (
         <header
@@ -72,34 +46,24 @@ export const Header = () => {
                     </Link>
                 </h1>
 
-                {isPrivatePath && (
-                    <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className={"md:flex justify-center w-full hidden"}
-                    >
-                        <InputSearch
-                            {...register("query")}
-                            type="text"
-                            placeholder="Đường dẫn video hoặc từ khóa"
-                            className={"w-96"}
-                        />
-                    </form>
-                )}
+                {isPrivatePath && <SearchForm />}
 
                 <div className={"flex flex-shrink-0 ml-auto space-x-2"}>
                     <ThemeToggle />
                     {isPrivatePath && isPending && (
                         <Skeleton className="w-10 h-10 bg-primary-foreground rounded-full" />
                     )}
-                    {isPrivatePath && isSuccess && (
+                    {isPrivatePath && user && (
                         <DropdownMenu>
-                            <UserAvatar
-                                src={user?.avatar}
-                                displayName={user?.displayName
-                                    .split("")
-                                    .at(0)
-                                    ?.toUpperCase()}
-                            />
+                            <DropdownMenuTrigger className="outline-none">
+                                <UserAvatar
+                                    src={user?.avatar}
+                                    displayName={user?.displayName
+                                        .split("")
+                                        .at(0)
+                                        ?.toUpperCase()}
+                                />
+                            </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 className="mt-2 max-w-60 min-w-60"
                                 align="end"
@@ -133,15 +97,6 @@ export const Header = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     )}
-
-                    {/* {isClient && !isAuthenticated && (
-                        <Button
-                            asChild
-                            variant={"outline"}
-                        >
-                            <Link href={routePath.login}>Đăng nhập</Link>
-                        </Button>
-                    )} */}
                 </div>
             </div>
         </header>

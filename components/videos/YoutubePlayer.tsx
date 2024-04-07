@@ -2,14 +2,18 @@
 
 import YouTube from "react-youtube";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { ArrowDownToLine } from "lucide-react";
+import { ArrowDownToLine, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
+import { useRoomContext } from "@/context/RoomContext";
 
 interface IYoutubePlayer {
     videoId: string;
+    videoTitle: string;
 }
 
-export default function YoutubePlayer({ videoId }: IYoutubePlayer) {
+export default function YoutubePlayer({ videoId, videoTitle }: IYoutubePlayer) {
+    const { exitRoom } = useRoomContext();
+
     const opts = {
         playerVars: {
             // https://developers.google.com/youtube/player_parameters
@@ -25,9 +29,7 @@ export default function YoutubePlayer({ videoId }: IYoutubePlayer) {
                 videoId={videoId}
                 opts={opts} // defaults -> ''
             />
-            <h2 className="font-semibold line-clamp-2 text-xl">
-                {"TIÊU ĐỀ VIDEO"}
-            </h2>
+            <h2 className="font-semibold line-clamp-2 text-xl">{videoTitle}</h2>
 
             <div className="flex mt-4 space-x-4 w-full">
                 <div className="flex mr-auto">
@@ -54,6 +56,17 @@ export default function YoutubePlayer({ videoId }: IYoutubePlayer) {
                         className="mr-2"
                     />
                     Tải video
+                </Button>
+                <Button
+                    className="select-none hover:bg-destructive"
+                    variant={"secondary"}
+                    onClick={exitRoom}
+                >
+                    <LogOut
+                        size={16}
+                        className="mr-1"
+                    />
+                    Thoát
                 </Button>
             </div>
         </div>

@@ -23,16 +23,12 @@ import { IUserSetting } from "@type/user.type";
 import { ILoginResponse } from "@type/api.type";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useUser } from "@/hooks/useUser";
 
 export default function SystemSettingPage() {
     const queryClient = useQueryClient();
-    const { data, isPending } = useQuery({
-        queryKey: ["user"],
-        staleTime: 30 * 60 * 1000,
-        queryFn: userApi.Info,
-    });
 
-    const user = data?.user;
+    const { user, isPending } = useUser();
 
     const form = useForm<IUpdateSystemSetting>({
         resolver: zodResolver(UpdateSystemSettingSchema),

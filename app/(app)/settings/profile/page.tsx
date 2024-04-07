@@ -8,22 +8,16 @@ import { IsAcceptErrorStatusCode } from "@/lib/utils";
 import { FormErrorResponse } from "@type/api.type";
 import { IUpdateUserInfoForm, UpdateUserInfoSchema } from "@api/schema/User";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useUser } from "@/hooks/useUser";
 
 export default function ProfileSetting() {
     const queryClient = useQueryClient();
-
-    const { data, isPending } = useQuery({
-        queryKey: ["user"],
-        staleTime: 30 * 60 * 1000,
-        queryFn: userApi.Info,
-    });
-
-    const user = data?.user;
+    const { user, isPending } = useUser();
 
     const {
         register,
@@ -67,6 +61,11 @@ export default function ProfileSetting() {
         onSuccess: () => resetField("avatar"),
     });
 
+    const isPendingApis =
+        uploadAvatarMutation.isPending ||
+        updateUserInfoMutation.isPending ||
+        isPending;
+
     const onSubmit: SubmitHandler<IUpdateUserInfoForm> = async (data) => {
         let uploadAvatarResponse;
         const { displayName, email } = data;
@@ -83,11 +82,6 @@ export default function ProfileSetting() {
             avatar: uploadAvatarResponse?.avatar,
         });
     };
-
-    const isPendingApi =
-        uploadAvatarMutation.isPending ||
-        updateUserInfoMutation.isPending ||
-        isPending;
 
     return (
         <div className="flex flex-col flex-grow">
@@ -110,7 +104,7 @@ export default function ProfileSetting() {
                         </Label>
                         <Input
                             {...register("displayName")}
-                            disabled={isPendingApi}
+                            disabled={isPendingApis}
                             id="displayName"
                         />
                         <p
@@ -135,7 +129,7 @@ export default function ProfileSetting() {
                         </Label>
                         <Input
                             {...register("email")}
-                            disabled={isPendingApi || user?.changedEmail}
+                            disabled={isPendingApis || user?.changedEmail}
                             id="email"
                         />
                         <p
@@ -158,7 +152,7 @@ export default function ProfileSetting() {
                             id="avatar"
                             type="file"
                             accept="image/png, image/jpeg"
-                            disabled={isPendingApi}
+                            disabled={isPendingApis}
                         />
                         <p
                             className={`${
@@ -173,11 +167,11 @@ export default function ProfileSetting() {
                     </div>
 
                     <Button
-                        disabled={isPendingApi}
+                        disabled={isPendingApis}
                         className="w-64"
                         type="submit"
                     >
-                        {isPendingApi && (
+                        {isPendingApis && (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         )}
                         Cập nhật tài khoản

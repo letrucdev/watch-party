@@ -1,18 +1,34 @@
 "use client";
-import { routePath } from "@/constants/path";
 import { cn } from "@/lib/utils";
 import { IYoutubeVideoItem } from "@/types/api.type";
 import { ListPlus, Play } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { fromNow } from "@/utils/time";
 import { formatNumberSocialStyle } from "@/utils";
+import { useRoomContext } from "@/context/RoomContext";
 
 interface IVideo extends IYoutubeVideoItem {
     className?: string;
 }
 
 export default function Video({ className, id, snippet, statistics }: IVideo) {
+    const { createRoom, addVideoToPlaylist, partyId } = useRoomContext();
+
+    const handleAddVideo = () => {
+        const video = {
+            channelTitle: snippet.channelTitle,
+            thumbnail: snippet.thumbnails.high.url,
+            videoId: id,
+            videoTitle: snippet.title,
+        };
+
+        if (!partyId) {
+            createRoom(video);
+            return;
+        }
+        /* addVideoToPlaylist(video); */
+    };
+
     return (
         <div
             className={cn(
@@ -20,9 +36,9 @@ export default function Video({ className, id, snippet, statistics }: IVideo) {
                 className
             )}
         >
-            <Link
-                href={routePath.party + `/${id}`}
+            <div
                 className="flex flex-col cursor-pointer group"
+                onClick={handleAddVideo}
             >
                 <div className={"overflow-hidden rounded-lg relative"}>
                     <Image
@@ -42,11 +58,21 @@ export default function Video({ className, id, snippet, statistics }: IVideo) {
                             "group-hover:scale-110 transition-all duration-200 aspect-video object-cover"
                         }
                     />
-                    <div className="bg-primary-foreground/10 w-full h-full absolute z-10 top-0 rounded-lg backdrop-blur-sm flex flex-col xl:flex-row items-center justify-center space-x-2 space-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 select-none ">
-                        <Play size={36} />
-                        <p className="font-semibold">Xem ngay</p>
-                        {/* <ListPlus size={36} />
-                        <p className="font-semibold">Thêm vào danh sách phát</p> */}
+                    <div className="bg-zinc-900/60 w-full h-full absolute z-10 top-0 rounded-lg backdrop-blur-sm flex flex-col xl:flex-row items-center justify-center space-x-2 space-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 select-none text-white">
+                        {!partyId && (
+                            <>
+                                <Play size={36} />
+                                <p className="font-semibold">Xem ngay</p>
+                            </>
+                        )}
+                        {partyId && (
+                            <>
+                                <ListPlus size={36} />
+                                <p className="font-semibold">
+                                    Thêm vào danh sách phát
+                                </p>
+                            </>
+                        )}
                     </div>
                 </div>
                 <p className={"line-clamp-2 text-sm font-semibold mt-2"}>
@@ -70,7 +96,7 @@ export default function Video({ className, id, snippet, statistics }: IVideo) {
                     ></span>
                     <p>{fromNow(snippet.publishedAt)}</p>
                 </span>
-            </Link>
+            </div>
         </div>
     );
 }
