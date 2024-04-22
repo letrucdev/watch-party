@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Đăng nhập",
+    title: "Đăng nhập tài khoản",
 };
 
 export default function LoginLayout({
