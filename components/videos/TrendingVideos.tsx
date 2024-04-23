@@ -11,7 +11,7 @@ export const TrendingVideos = ({ className }: { className?: string }) => {
     return (
         <div className={cn("flex flex-wrap -mx-2", className)}>
             {isPending &&
-                Array(12)
+                Array(8)
                     .fill(0)
                     .map((_, index) => {
                         return <VideoSkeleton key={index} />;

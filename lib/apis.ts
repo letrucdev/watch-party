@@ -1,6 +1,5 @@
 import {
     IAddVideoToPlaylistResponse,
-    IChangeSettingResponse,
     ICreatePartyResponse,
     IGetPartyResponse,
     IJoinPartyResponse,
@@ -10,35 +9,35 @@ import {
     IRegisterRequest,
     ISearchVideoResult,
     IUpdateUserInfoRequest,
+    IUpdateUserInfoResponse,
     IUploadAvatarResponse,
-    IYoutubeVideoItem,
-    SuccessResponse,
+    IYoutubeTrendingVideos,
 } from "@/types/api.type";
 import http from "./http";
-import { IChangeUserPassword } from "@api/schema/User";
-import { IUserSetting } from "@/types/user.type";
+import {IUser, IUserSetting} from "@/types/user.type";
+import {IChangeUserPasswordSchema} from "@/schema/update-user.schema";
 
 const authApi = {
     Login: async (data: ILoginRequest) => {
         try {
-            const login = await http.post<ILoginResponse>("/login", data);
+            const login = await http.post<ILoginResponse>("/auth/login", data);
 
-            return login.data.user;
+            return login.data;
         } catch (err) {
             throw err;
         }
     },
-    Logout: async () => {
-        try {
-            await http.post("/logout");
-        } catch (err) {
-            throw err;
-        }
-    },
+    /*    Logout: async () => {
+            try {
+                await http.post("/logout");
+            } catch (err) {
+                throw err;
+            }
+        },*/
     Register: async (data: IRegisterRequest) => {
         try {
-            const register = await http.post<SuccessResponse>(
-                "/register",
+            const register = await http.post(
+                "/auth/register",
                 data
             );
             return register.data;
@@ -49,18 +48,18 @@ const authApi = {
 };
 
 const userApi = {
-    Info: async () => {
+    me: async () => {
         try {
-            const user = await http.get<ILoginResponse>("/user");
+            const user = await http.get<IUser>("/users/me");
             return user.data;
         } catch (err) {
             throw err;
         }
     },
-    ChangePassword: async (data: IChangeUserPassword) => {
+    ChangePassword: async (data: IChangeUserPasswordSchema) => {
         try {
-            const changePassword = await http.put<SuccessResponse>(
-                "/user/password",
+            const changePassword = await http.put<any>(
+                "/users/password",
                 data
             );
             return changePassword.data;
@@ -70,7 +69,7 @@ const userApi = {
     },
     UpdateInfo: async (data: IUpdateUserInfoRequest) => {
         try {
-            const updateUser = await http.put<ILoginResponse>("/user", data);
+            const updateUser = await http.put<IUpdateUserInfoResponse>("/users/me", data);
             return updateUser.data;
         } catch (err) {
             throw err;
@@ -79,7 +78,7 @@ const userApi = {
     UploadAvatar: async (formData: FormData) => {
         try {
             const uploadAvatar = await http.post<IUploadAvatarResponse>(
-                "/user/avatar",
+                "/users/avatar",
                 formData
             );
             return uploadAvatar.data;
@@ -89,8 +88,8 @@ const userApi = {
     },
     ChangeSystemSetting: async (data: IUserSetting) => {
         try {
-            const changeSystemSetting = await http.put<IChangeSettingResponse>(
-                "/user/system-setting",
+            const changeSystemSetting = await http.put<IUserSetting>(
+                "/users/setting",
                 data
             );
 
@@ -162,8 +161,8 @@ const partyApi = {
 const youtubeApi = {
     Videos: async () => {
         try {
-            const videos = await http.get<IYoutubeVideoItem[]>(
-                "/youtube/videos"
+            const videos = await http.get<IYoutubeTrendingVideos>(
+                "/youtube/trending"
             );
             return videos.data;
         } catch (error) {
@@ -176,7 +175,7 @@ const youtubeApi = {
                 "/youtube/search",
                 {
                     params: {
-                        q: query,
+                        query,
                     },
                 }
             );
@@ -187,4 +186,4 @@ const youtubeApi = {
     },
 };
 
-export { authApi, userApi, partyApi, youtubeApi };
+export {authApi, userApi, partyApi, youtubeApi};

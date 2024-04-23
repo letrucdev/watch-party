@@ -2,7 +2,7 @@ import { TrendingVideos } from "@components/videos/TrendingVideos";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Trang chủ",
+    title: "Thịnh hành",
 };
 
 export default function Home() {

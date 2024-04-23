@@ -1,23 +1,25 @@
 "use client";
-import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
-import { Separator } from "@components/ui/separator";
-import { userApi } from "@/lib/apis";
-import { IsAcceptErrorStatusCode } from "@/lib/utils";
-import { FormErrorResponse } from "@type/api.type";
-import { IUpdateUserInfoForm, UpdateUserInfoSchema } from "@api/schema/User";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { Loader2 } from "lucide-react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useUser } from "@/hooks/useUser";
+
+import {Button} from "@components/ui/button";
+import {Input} from "@components/ui/input";
+import {Label} from "@components/ui/label";
+import {Separator} from "@components/ui/separator";
+import {userApi} from "@/lib/apis";
+import {IsAcceptErrorStatusCode} from "@/lib/utils";
+import {FormErrorResponse} from "@type/api.type";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {AxiosError} from "axios";
+import {Loader2} from "lucide-react";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {toast} from "sonner";
+import {useUser} from "@/hooks/useUser";
+import {IUser} from "@type/user.type";
+import {IUpdateUserInfoSchema, UpdateUserInfoSchema} from "@/schema/update-user.schema";
 
 export default function ProfileSetting() {
     const queryClient = useQueryClient();
-    const { user, isPending } = useUser();
+    const {user} = useUser();
 
     const {
         register,
@@ -26,8 +28,8 @@ export default function ProfileSetting() {
         reset,
         resetField,
         watch,
-        formState: { errors },
-    } = useForm<IUpdateUserInfoForm>({
+        formState: {errors},
+    } = useForm<IUpdateUserInfoSchema>({
         resolver: zodResolver(UpdateUserInfoSchema),
         values: {
             displayName: user?.displayName || "",
@@ -40,46 +42,50 @@ export default function ProfileSetting() {
     const updateUserInfoMutation = useMutation({
         mutationFn: userApi.UpdateInfo,
         onSuccess: (response) => {
-            queryClient.setQueryData(["user"], response);
-            toast.success("Thông báo", { description: response.message });
+            queryClient.setQueryData(["user"], (old: IUser) => {
+                return {...old, displayName: response.displayName, email: response.email}
+            });
+            toast.success("Thông báo", {description: "Cập nhật thông tin thành công"});
         },
         onError: (error) => {
             if (error instanceof AxiosError && IsAcceptErrorStatusCode(error)) {
                 const formError: FormErrorResponse = error.response?.data;
                 Object.keys(formError).forEach((key) => {
-                    setError(key as keyof IUpdateUserInfoForm, {
-                        message: formError[key as keyof IUpdateUserInfoForm][0],
+                    setError(key as keyof IUpdateUserInfoSchema, {
+                        message: formError[key as keyof IUpdateUserInfoSchema][0],
                     });
                 });
             }
-            reset({ email: user?.email, displayName: user?.displayName });
+            reset({email: user?.email, displayName: user?.displayName});
         },
     });
 
     const uploadAvatarMutation = useMutation({
         mutationFn: userApi.UploadAvatar,
-        onSuccess: () => resetField("avatar"),
+        onSuccess: (data) => {
+            resetField("avatar")
+            queryClient.setQueryData(["user"], (old: IUser) => {
+                return {...old, avatar: data.avatar}
+            })
+        },
     });
 
     const isPendingApis =
-        uploadAvatarMutation.isPending ||
-        updateUserInfoMutation.isPending ||
-        isPending;
+        updateUserInfoMutation.isPending
 
-    const onSubmit: SubmitHandler<IUpdateUserInfoForm> = async (data) => {
+    const onSubmit: SubmitHandler<IUpdateUserInfoSchema> = async (data) => {
         let uploadAvatarResponse;
-        const { displayName, email } = data;
+        const {displayName, email} = data;
 
         if (avatarFile && avatarFile.length > 0) {
             const form = new FormData();
             form.append("avatar", avatarFile[0]);
-            uploadAvatarResponse = await uploadAvatarMutation.mutateAsync(form);
+            uploadAvatarMutation.mutate(form);
         }
 
         updateUserInfoMutation.mutate({
             displayName,
             email,
-            avatar: uploadAvatarResponse?.avatar,
         });
     };
 
@@ -90,7 +96,7 @@ export default function ProfileSetting() {
                 <p className="text-muted-foreground">
                     Chỉnh sửa thông tin tài khoản
                 </p>
-                <Separator className="my-4" />
+                <Separator className="my-4"/>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col mt-3 space-y-8">
@@ -151,6 +157,7 @@ export default function ProfileSetting() {
                             {...register("avatar")}
                             id="avatar"
                             type="file"
+                            multiple={false}
                             accept="image/png, image/jpeg"
                             disabled={isPendingApis}
                         />
@@ -162,7 +169,7 @@ export default function ProfileSetting() {
                             } text-[0.8rem]`}
                         >
                             {errors.avatar?.message ||
-                                "Ảnh đại diện phải có dung lượng < 5mb"}
+                                "Ảnh đại diện phải có dung lượng < 2mb"}
                         </p>
                     </div>
 
@@ -172,7 +179,7 @@ export default function ProfileSetting() {
                         type="submit"
                     >
                         {isPendingApis && (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
                         )}
                         Cập nhật tài khoản
                     </Button>

@@ -1,21 +1,19 @@
-import { privatePath } from "@constants/path";
-import { userApi } from "@lib/apis";
-import { useQuery } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
+import {userApi} from "@lib/apis";
+import {useQuery} from "@tanstack/react-query";
+import {useAuth} from "@/context/AuthContext";
+import {AUTH_STATUS} from "@type/enum/auth.enum";
 
 export const useUser = () => {
-    const pathname = usePathname();
+    const {isAuthenticated} = useAuth();
 
-    const isPrivatePath = privatePath.some((path) => pathname.startsWith(path));
-
-    const { data, isPending } = useQuery({
+    const {data} = useQuery({
         queryKey: ["user"],
         staleTime: Infinity,
-        queryFn: userApi.Info,
-        enabled: isPrivatePath,
+        queryFn: userApi.me,
+        enabled: isAuthenticated === AUTH_STATUS.AUTHENTICATED,
     });
 
-    const user = data?.user;
+    const user = data;
 
-    return { user, isPending };
+    return {user};
 };

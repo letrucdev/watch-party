@@ -22,6 +22,11 @@ const nextConfig = {
                 hostname: "yt3.ggpht.com",
                 pathname: "/**",
             },
+            {
+                protocol: "http",
+                hostname: "localhost",
+                pathname: "/**",
+            },
         ],
     },
 };

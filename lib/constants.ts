@@ -1,7 +1,8 @@
-import { HttpStatusCode } from "axios";
+import {HttpStatusCode} from "axios";
 
 export const LocalStorageKeys = {
     user: "user",
+    accessToken: "accessToken",
 };
 
 export const CookiesKeys = {
@@ -10,7 +11,7 @@ export const CookiesKeys = {
 
 export const acceptErrorStatusCode = [
     HttpStatusCode.BadRequest,
-    HttpStatusCode.Unauthorized,
+    HttpStatusCode.Forbidden
 ];
 
 export const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg"];

@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { IUser, IUserSetting } from "./user.type";
-import { UpdateUserInfoSchema } from "@api/schema/User";
+import {z} from "zod";
+import {IUser, IUserSetting} from "./user.type";
+import {UpdateUserInfoSchema} from "@/schema/update-user.schema";
 
 export interface ILoginRequest {
     email: string;
@@ -25,6 +25,12 @@ export interface FormErrorResponse {
 
 export interface SuccessResponse {
     message: string;
+}
+
+export interface IUpdateUserInfoResponse {
+    displayName: string;
+    email: string;
+    id: number;
 }
 
 export interface IPlaylistVideo {
@@ -62,15 +68,16 @@ export interface IAddVideoToPlaylistResponse extends SuccessResponse {
     video: IPlaylistVideo;
 }
 
-export interface ILoginResponse extends SuccessResponse {
-    user: IUser;
+export interface ILoginResponse {
+    accessToken: string;
 }
 
-export interface IUploadAvatarResponse extends SuccessResponse {
+
+export interface IUploadAvatarResponse {
     avatar: string;
 }
 
-export interface IChangeSettingResponse extends SuccessResponse {
+export interface IChangeSettingResponse {
     setting: IUserSetting;
 }
 
@@ -117,6 +124,10 @@ export interface IYoutubeVideoItem {
     statistics: IYoutubeVideoStatistics;
 }
 
+export interface IYoutubeTrendingVideos {
+    items: IYoutubeVideoItem[];
+}
+
 export enum YoutubeSearchItemKind {
     CHANNEL = "youtube#channel",
     VIDEO = "youtube#video",
@@ -129,9 +140,14 @@ export interface IYoutubeSearchItem extends Omit<IYoutubeVideoItem, "id"> {
     };
 }
 
+export interface IPageInfoResult {
+    resultsPerPage: number
+    totalResults: number
+}
+
 export interface ISearchVideoResult {
-    totalResults: number;
     items: IYoutubeSearchItem[];
+    pageInfo: IPageInfoResult;
 }
 
 /* export interface IGetYoutubeVideosResponse {

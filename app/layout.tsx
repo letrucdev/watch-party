@@ -1,14 +1,17 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { ThemeProvider } from "@components/theme-provider";
-import { Header } from "@components/header/Header";
-import { Toaster } from "@components/ui/sonner";
+import type {Metadata} from "next";
+import React from "react";
+import {Inter} from "next/font/google";
+import {ThemeProvider} from "@components/theme-provider";
+import {Header} from "@components/header/Header";
+import {Toaster} from "@components/ui/sonner";
 import ProgressBarProviders from "@app/progress-bar-provider";
 import QueryProviders from "@app/query-provider";
+import {RoomProvider} from "@/context/RoomContext";
 import "./globals.css";
-import { RoomProvider } from "@/context/RoomContext";
+import {AuthProvider} from "@/context/AuthContext";
 
-const inter = Inter({ subsets: ["latin"] });
+
+const inter = Inter({subsets: ["latin"]});
 
 export const metadata: Metadata = {
     title: {
@@ -19,8 +22,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-    children,
-}: Readonly<{
+                                       children,
+                                   }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
@@ -28,27 +31,29 @@ export default function RootLayout({
             lang="en"
             suppressHydrationWarning
         >
-            <body className={`${inter.className}`}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                >
-                    <QueryProviders>
-                        <ProgressBarProviders>
-                            <RoomProvider>
-                                <div className={"min-h-screen"}>
-                                    <Header />
-                                    <div className="container p-4">
-                                        {children}
-                                    </div>
-                                    <Toaster />
+        <body className={`${inter.className}`}>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+        >
+            <QueryProviders>
+                <ProgressBarProviders>
+                    <AuthProvider>
+                        <RoomProvider>
+                            <div className={"min-h-screen"}>
+                                <Header/>
+                                <div className="container p-4">
+                                    {children}
                                 </div>
-                            </RoomProvider>
-                        </ProgressBarProviders>
-                    </QueryProviders>
-                </ThemeProvider>
-            </body>
+                                <Toaster/>
+                            </div>
+                        </RoomProvider>
+                    </AuthProvider>
+                </ProgressBarProviders>
+            </QueryProviders>
+        </ThemeProvider>
+        </body>
         </html>
     );
 }

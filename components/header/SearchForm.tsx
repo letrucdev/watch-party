@@ -1,9 +1,10 @@
-import { ISearchVideoForm, SearchVideoSchema } from "@app/api/schema/Api";
-import { InputSearch } from "@components/ui/input-search";
-import { routePath } from "@constants/path";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+"use client"
+import {InputSearch} from "@components/ui/input-search";
+import {routePath} from "@constants/path";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useRouter, useSearchParams} from "next/navigation";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {ISearchSchema, SearchSchema} from "@/schema/search.schema";
 
 export const SearchForm = () => {
     const router = useRouter();
@@ -14,13 +15,13 @@ export const SearchForm = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
-    } = useForm<ISearchVideoForm>({
-        resolver: zodResolver(SearchVideoSchema),
-        values: { query: search ?? "" },
+        formState: {errors},
+    } = useForm<ISearchSchema>({
+        resolver: zodResolver(SearchSchema),
+        values: {query: search ?? ""},
     });
 
-    const onSubmit: SubmitHandler<ISearchVideoForm> = (data) =>
+    const onSubmit: SubmitHandler<ISearchSchema> = (data) =>
         router.push(`${routePath.search}?q=${data.query}`);
 
     return (

@@ -7,29 +7,19 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ThemeToggle } from "./ThemeToggle";
-import { LogOut, Settings, Users } from "lucide-react";
-import { privatePath, routePath } from "@/constants/path";
-import { usePathname } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { authApi } from "@/lib/apis";
-import { Skeleton } from "@components/ui/skeleton";
-import { UserAvatar } from "@components/ui/user-avatar";
-import { SearchForm } from "@components/header/SearchForm";
-import { useUser } from "@/hooks/useUser";
-import { Suspense } from "react";
+import {ThemeToggle} from "./ThemeToggle";
+import {LogOut, Settings, Users} from "lucide-react";
+import {routePath} from "@/constants/path";
+import {UserAvatar} from "@components/ui/user-avatar";
+import {SearchForm} from "@components/header/SearchForm";
+import {useUser} from "@/hooks/useUser";
+import {useAuth} from "@/context/AuthContext";
+import {AUTH_STATUS} from "@type/enum/auth.enum";
 
 export const Header = () => {
-    const pathname = usePathname();
-    const isPrivatePath = privatePath.some((path) => pathname.startsWith(path));
+    const {logout, isAuthenticated} = useAuth()
+    const {user} = useUser();
 
-    const { user, isPending } = useUser();
-
-    const logoutMutation = useMutation({
-        mutationFn: authApi.Logout,
-    });
-
-    const handleLogout = () => logoutMutation.mutate();
 
     return (
         <header
@@ -47,18 +37,11 @@ export const Header = () => {
                     </Link>
                 </h1>
 
-                {isPrivatePath && (
-                    <Suspense>
-                        <SearchForm />
-                    </Suspense>
-                )}
+                {isAuthenticated === AUTH_STATUS.AUTHENTICATED && <SearchForm/>}
 
                 <div className={"flex flex-shrink-0 ml-auto space-x-2"}>
-                    <ThemeToggle />
-                    {isPrivatePath && isPending && (
-                        <Skeleton className="w-10 h-10 bg-primary-foreground rounded-full" />
-                    )}
-                    {isPrivatePath && user && (
+                    <ThemeToggle/>
+                    {isAuthenticated === AUTH_STATUS.AUTHENTICATED && (
                         <DropdownMenu>
                             <DropdownMenuTrigger className="outline-none">
                                 <UserAvatar
@@ -81,22 +64,22 @@ export const Header = () => {
                                         {user?.email}
                                     </small>
                                 </span>
-                                <DropdownMenuSeparator />
+                                <DropdownMenuSeparator/>
                                 <Link href={routePath.settingProfile}>
                                     <DropdownMenuItem>
-                                        <Users className="mr-2 h-4 w-4" />
+                                        <Users className="mr-2 h-4 w-4"/>
                                         <span>Tài khoản</span>
                                     </DropdownMenuItem>
                                 </Link>
                                 <Link href={routePath.settingSystem}>
                                     <DropdownMenuItem>
-                                        <Settings className="mr-2 h-4 w-4" />
+                                        <Settings className="mr-2 h-4 w-4"/>
                                         <span>Hệ thống</span>
                                     </DropdownMenuItem>
                                 </Link>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout}>
-                                    <LogOut className="mr-2 h-4 w-4" />
+                                <DropdownMenuSeparator/>
+                                <DropdownMenuItem onClick={logout}>
+                                    <LogOut className="mr-2 h-4 w-4"/>
                                     <span>Đăng xuất</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

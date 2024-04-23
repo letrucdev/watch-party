@@ -1,12 +1,20 @@
-import { type ClassValue, clsx } from "clsx";
-import { IUser } from "@/types/user.type";
-import { twMerge } from "tailwind-merge";
-import { LocalStorageKeys, acceptErrorStatusCode } from "./constants";
-import { AxiosError, HttpStatusCode } from "axios";
+import {type ClassValue, clsx} from "clsx";
+import {IUser} from "@/types/user.type";
+import {twMerge} from "tailwind-merge";
+import {acceptErrorStatusCode, LocalStorageKeys} from "./constants";
+import {AxiosError, HttpStatusCode} from "axios";
 
 export const cn = (...inputs: ClassValue[]) => {
     return twMerge(clsx(inputs));
 };
+
+export const saveAccessTokenToLS = (token: string) => {
+    localStorage.setItem(LocalStorageKeys.accessToken, token)
+}
+
+export const getAccessTokenFromLS = () => localStorage.getItem(LocalStorageKeys.accessToken)
+
+export const clearLocalStorage = () => localStorage.clear()
 
 export const SaveUserToLocalStorage = (user: IUser) => {
     localStorage.setItem(LocalStorageKeys.user, JSON.stringify(user));

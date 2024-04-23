@@ -1,28 +1,27 @@
 "use client";
 
-import { Button } from "@components/ui/button";
-import { routePath } from "@constants/path";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { ILogin, LoginSchema } from "@api/schema/Auth";
-import { Input } from "@components/ui/input";
-import { FormErrorResponse, ILoginRequest } from "@type/api.type";
-import { useMutation } from "@tanstack/react-query";
-import { authApi } from "@lib/apis";
-import { AxiosError } from "axios";
-import { IsAcceptErrorStatusCode } from "@lib/utils";
-import { Loader2 } from "lucide-react";
+import {Button} from "@components/ui/button";
+import {routePath} from "@constants/path";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {Input} from "@components/ui/input";
+import {FormErrorResponse, ILoginRequest} from "@type/api.type";
+import {useMutation} from "@tanstack/react-query";
+import {authApi} from "@lib/apis";
+import {AxiosError} from "axios";
+import {IsAcceptErrorStatusCode} from "@lib/utils";
+import {Loader2} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Metadata } from "next";
+import {ILoginSchema, LoginSchema} from "@/schema/login.schema";
 
 export default function LoginPage() {
     const {
         register,
         handleSubmit,
         setError,
-        formState: { errors },
-    } = useForm<ILogin>({ resolver: zodResolver(LoginSchema) });
+        formState: {errors},
+    } = useForm<ILoginSchema>({resolver: zodResolver(LoginSchema)});
 
     const loginMutation = useMutation({
         mutationFn: authApi.Login,
@@ -30,8 +29,8 @@ export default function LoginPage() {
             if (error instanceof AxiosError && IsAcceptErrorStatusCode(error)) {
                 const formError: FormErrorResponse = error.response?.data;
                 Object.keys(formError).forEach((key) => {
-                    setError(key as keyof ILogin, {
-                        message: formError[key as keyof ILogin][0],
+                    setError(key as keyof ILoginSchema, {
+                        message: formError[key as keyof ILoginSchema][0],
                     });
                 });
             }
@@ -102,7 +101,7 @@ export default function LoginPage() {
                                     </div>
                                     <Button disabled={loginMutation.isPending}>
                                         {loginMutation.isPending && (
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
                                         )}
                                         Đăng nhập
                                     </Button>
@@ -110,7 +109,7 @@ export default function LoginPage() {
                             </form>
                             <div className="relative">
                                 <div className="absolute inset-0 flex items-center">
-                                    <span className="w-full border-t" />
+                                    <span className="w-full border-t"/>
                                 </div>
                                 <div className="relative flex justify-center text-xs uppercase">
                                     <span className="bg-background px-2 text-muted-foreground">
