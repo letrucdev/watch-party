@@ -1,13 +1,18 @@
 import * as React from "react";
-import { Search } from "lucide-react";
+import {CircleX, Search} from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import {cn} from "@/lib/utils";
 
 export interface InputProps
-    extends React.InputHTMLAttributes<HTMLInputElement> {}
+    extends React.InputHTMLAttributes<HTMLInputElement> {
+    hasContent: boolean,
+    clearText: () => void
+}
 
 const InputSearch = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ className, type, ...props }, ref) => {
+    ({className, type, hasContent, clearText, ...props}, ref) => {
+
+
         return (
             <div
                 className={cn(
@@ -16,19 +21,28 @@ const InputSearch = React.forwardRef<HTMLInputElement, InputProps>(
                 )}
             >
                 <input
+                    autoComplete={"off"}
                     className="bg-transparent outline-none w-full mr-2 peer"
                     type={type}
                     ref={ref}
                     {...props}
                 />
-                <Search
-                    size={18}
-                    className="text-muted-foreground peer-focus:text-primary transition-colors"
-                />
+
+                {!hasContent &&
+                    <Search
+                        size={18}
+                        className="text-muted-foreground peer-focus:text-primary transition-colors"
+                    />}
+                {hasContent &&
+                    <CircleX
+                        onClick={clearText}
+                        size={18}
+                        className="text-muted-foreground peer-focus:text-primary transition-colors cursor-pointer"
+                    />}
             </div>
         );
     }
 );
 InputSearch.displayName = "Input";
 
-export { InputSearch };
+export {InputSearch};

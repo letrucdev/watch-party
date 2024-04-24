@@ -26,4 +26,10 @@ export const ValidationText = {
     requiredPassword: 'Mật khẩu không được bỏ trống',
     minLengthPassword: 'Mật khẩu cần tối thiểu 6 ký tự',
     confirmPasswordNotMatch: 'Nhập lại mật khẩu không khớp',
+
+    //Profile
+    invalidAvatarFileType: "Định dạng file phải là .png hoặc .jpg",
+    maxFileSize: "Dung lượng file ảnh không được vượt quá 2mb",
+
+    invalidValue: "Giá trị không hợp lệ"
 };

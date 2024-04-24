@@ -1,17 +1,17 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { VideoSearchItem } from "./VideoSearchItem";
-import { VideoSearchItemSkeleton } from "./VideoSearchItemSkeleton";
-import { formatNumberSocialStyle } from "@utils/index";
-import { useSearchVideos } from "@/hooks/useSearchVideos";
+import {cn} from "@/lib/utils";
+import {VideoSearchItem} from "./VideoSearchItem";
+import {VideoSearchItemSkeleton} from "./VideoSearchItemSkeleton";
+import {formatNumberSocialStyle} from "@/utils";
+import {useSearchVideos} from "@/hooks/useSearchVideos";
 
 interface ISearchVideos {
     className?: string;
     query: string;
 }
 
-export const SearchVideos = ({ className, query }: ISearchVideos) => {
-    const { videos, totalResults, isPending } = useSearchVideos(query);
+export const SearchVideos = ({className, query}: ISearchVideos) => {
+    const {videos, totalResults, isPending} = useSearchVideos(query);
 
     return (
         <>
@@ -26,7 +26,7 @@ export const SearchVideos = ({ className, query }: ISearchVideos) => {
                     Array(5)
                         .fill(0)
                         .map((_, index) => (
-                            <VideoSearchItemSkeleton key={index} />
+                            <VideoSearchItemSkeleton key={index}/>
                         ))}
                 {videos &&
                     videos.map((video) => {

@@ -16,10 +16,16 @@ export const SearchForm = () => {
         register,
         handleSubmit,
         formState: {errors},
+        watch,
+        reset
     } = useForm<ISearchSchema>({
         resolver: zodResolver(SearchSchema),
-        values: {query: search ?? ""},
+        values: {query: search!},
     });
+
+    const query = watch("query")
+
+    const handleClearText = () => reset({query: ""})
 
     const onSubmit: SubmitHandler<ISearchSchema> = (data) =>
         router.push(`${routePath.search}?q=${data.query}`);
@@ -31,6 +37,8 @@ export const SearchForm = () => {
         >
             <InputSearch
                 {...register("query")}
+                clearText={handleClearText}
+                hasContent={!!query}
                 type="text"
                 placeholder="Đường dẫn video hoặc từ khóa"
                 className={"w-96"}

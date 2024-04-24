@@ -14,8 +14,8 @@ import {
     IYoutubeTrendingVideos,
 } from "@/types/api.type";
 import http from "./http";
-import {IUser, IUserSetting} from "@/types/user.type";
-import {IChangeUserPasswordSchema} from "@/schema/update-user.schema";
+import { IUser, IUserSetting } from "@/types/user.type";
+import { IChangeUserPasswordSchema } from "@/schema/update-user.schema";
 
 const authApi = {
     Login: async (data: ILoginRequest) => {
@@ -36,10 +36,7 @@ const authApi = {
         },*/
     Register: async (data: IRegisterRequest) => {
         try {
-            const register = await http.post(
-                "/auth/register",
-                data
-            );
+            const register = await http.post("/auth/register", data);
             return register.data;
         } catch (err) {
             throw err;
@@ -58,10 +55,7 @@ const userApi = {
     },
     ChangePassword: async (data: IChangeUserPasswordSchema) => {
         try {
-            const changePassword = await http.put<any>(
-                "/users/password",
-                data
-            );
+            const changePassword = await http.put<any>("/users/password", data);
             return changePassword.data;
         } catch (err) {
             throw err;
@@ -69,7 +63,10 @@ const userApi = {
     },
     UpdateInfo: async (data: IUpdateUserInfoRequest) => {
         try {
-            const updateUser = await http.put<IUpdateUserInfoResponse>("/users/me", data);
+            const updateUser = await http.put<IUpdateUserInfoResponse>(
+                "/users/me",
+                data
+            );
             return updateUser.data;
         } catch (err) {
             throw err;
@@ -112,11 +109,10 @@ const partyApi = {
             throw error;
         }
     },
-    Create: async (video: IPlaylistVideo) => {
+    Create: async () => {
         try {
             const createParty = await http.post<ICreatePartyResponse>(
-                "/party",
-                video
+                "/party/create"
             );
 
             return createParty.data;
@@ -127,7 +123,7 @@ const partyApi = {
     Join: async (partyId: string) => {
         try {
             const joinParty = await http.post<IJoinPartyResponse>(
-                `/party/${partyId}/join`
+                `/party/join/${partyId}`
             );
 
             return joinParty.data;
@@ -186,4 +182,4 @@ const youtubeApi = {
     },
 };
 
-export {authApi, userApi, partyApi, youtubeApi};
+export { authApi, userApi, partyApi, youtubeApi };

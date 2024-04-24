@@ -2,7 +2,7 @@ import {z} from "zod";
 import {ValidationText} from "@constants/text";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 2;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 
 export const UpdateUserInfoSchema = z.object({
         email: z
@@ -20,14 +20,14 @@ export const UpdateUserInfoSchema = z.object({
                     files.length === 1
                         ? files[0].size <= MAX_FILE_SIZE
                         : true,
-                {message: "Dung lượng file ảnh không được vượt quá 5mb"}
+                {message: ValidationText.maxFileSize}
             )
             .refine(
                 (files) =>
                     files.length === 1
                         ? ACCEPTED_IMAGE_TYPES.includes(files[0].type)
                         : true,
-                {message: "Định dạng file phải là .png hoặc .jpg"}
+                {message: ValidationText.invalidAvatarFileType}
             )
             .optional(),
     })
@@ -51,8 +51,8 @@ export const ChangeUserPasswordSchema = z
     });
 
 export const UpdateUserSystemSettingSchema = z.object({
-    animationEnable: z.boolean({invalid_type_error: 'Giá trị không hợp lệ'}),
-    ecoMode: z.boolean({invalid_type_error: 'Giá trị không hợp lệ'}),
+    animationEnable: z.boolean({invalid_type_error: ValidationText.invalidValue}),
+    ecoMode: z.boolean({invalid_type_error: ValidationText.invalidValue}),
 });
 
 export type IUpdateUserSystemSettingSchema = z.infer<typeof UpdateUserSystemSettingSchema>

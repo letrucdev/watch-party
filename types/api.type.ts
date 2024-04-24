@@ -1,6 +1,6 @@
-import {z} from "zod";
-import {IUser, IUserSetting} from "./user.type";
-import {UpdateUserInfoSchema} from "@/schema/update-user.schema";
+import { z } from "zod";
+import { IUser, IUserSetting } from "./user.type";
+import { UpdateUserInfoSchema } from "@/schema/update-user.schema";
 
 export interface ILoginRequest {
     email: string;
@@ -29,6 +29,7 @@ export interface SuccessResponse {
 
 export interface IUpdateUserInfoResponse {
     displayName: string;
+    changedEmail: boolean;
     email: string;
     id: number;
 }
@@ -48,12 +49,14 @@ export interface IPartyParticipant {
     user: Pick<IUser, "id" | "displayName" | "avatar">;
 }
 
-export interface IJoinPartyResponse extends SuccessResponse {
+export interface IJoinPartyResponse {
     party: IGetPartyResponse;
 }
 
-export interface ICreatePartyResponse extends SuccessResponse {
+export interface ICreatePartyResponse {
+    id: number;
     partyId: string;
+    ownerId: number;
 }
 
 export interface IGetPartyResponse {
@@ -71,7 +74,6 @@ export interface IAddVideoToPlaylistResponse extends SuccessResponse {
 export interface ILoginResponse {
     accessToken: string;
 }
-
 
 export interface IUploadAvatarResponse {
     avatar: string;
@@ -141,8 +143,8 @@ export interface IYoutubeSearchItem extends Omit<IYoutubeVideoItem, "id"> {
 }
 
 export interface IPageInfoResult {
-    resultsPerPage: number
-    totalResults: number
+    resultsPerPage: number;
+    totalResults: number;
 }
 
 export interface ISearchVideoResult {

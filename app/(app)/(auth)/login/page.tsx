@@ -14,8 +14,11 @@ import {Loader2} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {ILoginSchema, LoginSchema} from "@/schema/login.schema";
+import {useRouter} from "next/navigation";
 
 export default function LoginPage() {
+    const router = useRouter()
+
     const {
         register,
         handleSubmit,
@@ -25,6 +28,7 @@ export default function LoginPage() {
 
     const loginMutation = useMutation({
         mutationFn: authApi.Login,
+        onSuccess: () => router.push(routePath.home),
         onError: (error) => {
             if (error instanceof AxiosError && IsAcceptErrorStatusCode(error)) {
                 const formError: FormErrorResponse = error.response?.data;

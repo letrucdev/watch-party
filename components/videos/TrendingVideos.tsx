@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
-import { cn } from "@/lib/utils";
-import { VideoSkeleton } from "./VideoSkeleton";
+import {cn} from "@/lib/utils";
+import {VideoSkeleton} from "./VideoSkeleton";
 import Video from "./Video";
-import { useTrendingVideos } from "@/hooks/useTrendingVideos";
+import {useTrendingVideos} from "@/hooks/useTrendingVideos";
 
-export const TrendingVideos = ({ className }: { className?: string }) => {
-    const { videos, isPending } = useTrendingVideos();
+export const TrendingVideos = ({className}: { className?: string }) => {
+    const {videos, isPending} = useTrendingVideos();
 
     return (
         <div className={cn("flex flex-wrap -mx-2", className)}>
@@ -14,9 +14,9 @@ export const TrendingVideos = ({ className }: { className?: string }) => {
                 Array(8)
                     .fill(0)
                     .map((_, index) => {
-                        return <VideoSkeleton key={index} />;
+                        return <VideoSkeleton key={index}/>;
                     })}
-            {videos &&
+             {videos &&
                 videos.map((video) => {
                     return (
                         <Video
@@ -27,6 +27,9 @@ export const TrendingVideos = ({ className }: { className?: string }) => {
                         />
                     );
                 })}
-        </div>
-    );
-};
+           {/* {!isPending && !videos && <p className="text-muted-foreground ml-2 ">
+                Không có kết quả
+            </p>
+            }*/}
+        </div>)
+}

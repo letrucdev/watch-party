@@ -1,23 +1,11 @@
 "use client";
 
-import { routePath } from "@constants/path";
-import { partyApi } from "@lib/apis";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-    IPartyParticipant,
-    IPartyPlaylist,
-    IPlaylistVideo,
-} from "@type/api.type";
-import { useRouter } from "next/navigation";
-import {
-    Dispatch,
-    SetStateAction,
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import {routePath} from "@constants/path";
+import {partyApi} from "@lib/apis";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {IPartyParticipant, IPartyPlaylist, IPlaylistVideo,} from "@type/api.type";
+import {useRouter} from "next/navigation";
+import React, {createContext, Dispatch, SetStateAction, useCallback, useContext, useState} from "react";
 
 interface IRoomContext {
     partyId: string | null;
@@ -39,18 +27,23 @@ interface IRoomContext {
 const RoomContext = createContext<IRoomContext>({
     partyId: null,
     partyOwnerId: undefined,
-    setPartyId: () => {},
+    setPartyId: () => {
+    },
     participants: undefined,
     playlist: undefined,
     chat: [],
-    setChat: () => {},
-    createRoom: async () => {},
-    exitRoom: () => {},
-    addVideoToPlaylist: async () => {},
+    setChat: () => {
+    },
+    createRoom: async () => {
+    },
+    exitRoom: () => {
+    },
+    addVideoToPlaylist: async () => {
+    },
     isPending: false,
 });
 
-export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
+export const RoomProvider = ({children}: { children: React.ReactNode }) => {
     const queryClient = useQueryClient();
     const router = useRouter();
 
@@ -66,9 +59,9 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
 
     const addVideoToPlaylistMutation = useMutation({
         mutationFn: ({
-            video,
-            partyId,
-        }: {
+                         video,
+                         partyId,
+                     }: {
             video: IPlaylistVideo;
             partyId: string;
         }) => partyApi.AddVideoToPlaylist(partyId, video),
@@ -78,7 +71,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
         mutationFn: (partyId: string) => partyApi.ExitRoom(partyId),
         onSuccess: () => {
             setPartyId(null);
-            queryClient.removeQueries({ queryKey: ["room"] });
+            queryClient.removeQueries({queryKey: ["room"]});
             router.push(routePath.home);
         },
     });
